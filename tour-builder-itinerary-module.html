@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tour Builder - Itinerary Module</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr" defer></script>
+  <script src="./tour-builder-itinerary-module.js" defer></script>
+  <link rel="stylesheet" href="./jquery-ui.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <link href="./tour-builder-itinerary-module.css" rel="stylesheet">
+</head>
+<body>
+  <div class="loader"></div>
+  <main class="tb-main">
+    <section class="general-information">
+      <h3>General Information</h3>
+      <!--<label for="tour-name">Tour Name</label>
+      <input type="text" id="tour-name" name="tour-name"><br>
+      <label for="Tour Agent">Tour Agent</label>
+      <input type="text" id="tour-agent" name="tour-agent"><br>-->
+      <div class="date-selections">
+        <p>Please select a start data and then an end date on the calendar to set a date range. If your end date is not visiable, use the navigation arrows to proceed to the next month after selecting a start date.</p>
+        <div class="calendar-field"></div>
+        <div class="start-date-field">
+          <p>Start Date<br><span class="starting-date-display"></span></p>
+        </div>
+        <div class="end-date-field">
+          <p>End Date<br><span class="ending-date-display"></span></p>
+        </div>
+      </div>
+      <p><span class="total-days"></span> Days / <span class="total-overnights"></span> Overnights</p>
+      <p class="test"></p>
+    </section>
+    <section class="tour-overview">
+      <h3>Tour Overview</h3>
+      <p>Enter the overnight information, then click create Itinerary</p>
+      <table class="overview-table table table-striped">
+        <thead class="overview-table-header">
+          <tr>
+            <td>Day</td>
+            <td>Date</td>
+            <td>Overnight City</td>
+            <td>Overnight Hotel</td>
+          </tr>
+        </thead>
+        <tbody class="overview-table-body">
+          <tr class="overview-day-row">
+            <td class="overview-day-column overview-day-number"></td>
+            <td class="overview-day-column overview-date"></td>
+            <td class="overview-day-column overview-overnight-city"><input type="text" placeholder="Enter City"></td>
+            <td class="overview-day-column overview-overnight-hotel"><input type="text" placeholder="Enter Hotel"></td>
+          </tr>
+        </tbody>
+      </table>
+      <button id="lock-overview" type="button">Lock Overview</button>
+      <button id="create-itinerary" type="button">Create Itinerary</button>
+    </section>
+    <section class="tour-itinerary">
+      <h3>Itinerary</h3>
+      <div id="tour-itinerary-tabs">
+          <ul id="tour-itinerary-tab-nav">
+            <!--<li class="tour-itinerary-tab-item"><a href="#tour-itinerary-tabs-1">Day <span class="tour-itinerary-tab-day-number"></span></a></li>-->
+          </ul>
+          <div id="tour-itinerary-tabs-content">
+            <!--<div id="tour-itinerary-tabs-1" class="tour-itinerary-tab">
+              <div class="overview">
+                <h6>Overview</h6>
+              </div>
+              <div class="included-meals">
+                <h4>Included Meals</h4>
+                <input type="checkbox" id="breakfast-check-ti-tab-1" name="breakfast-check-ti-tab-1" value="breakfast">
+                <label for="breakfast-check-ti-tab-1">Breakfast</label>
+                <input type="checkbox" id="lunch-check-ti-tab-1" name="lunch-check-ti-tab-1" value="lunch">
+                <label for="lunch-check-ti-tab-1">Lunch</label>
+                <input type="checkbox" id="dinner-check-ti-tab-1" name="dinner-check-ti-tab-1" value="dinner">
+                <label for="dinner-check-ti-tab-1">Dinner</label>
+              </div>
+              <div class="activities">
+                <h4>Activities</h4>
+                <div class="morning">
+                  <p>Morning Activities</p>
+                  <input type="checkbox" id="breakfast-activity-1" name="breakfast-activity-1" value="eat-breakfast">
+                  <label for="breakfast-activity-1">Have Breakfast</label><br>
+                  <input type="checkbox" id="hotel-checkout-1" name="hotel-checkout-1" value="hotel-checkout">
+                  <label for="hotel-checkout-1">Hotel Checkout</label><br>
+                  <input type="checkbox" id="leisure-time-1" name="leisure-time-1" value="leisure-time">
+                  <label for="leisure-time-1">Leisure Time</label><br>
+                  <input type="checkbox" id="included-activity-1" name="included-activity-1" value="included-activity">
+                  <label for="included-activity-1">Included Activity</label><br>
+                  <input type="checkbox" id="optional-activity-1" name="optional-activity-1" value="optional-activity">
+                  <label for="optional-activity-1">Optional Activity</label><br>
+                </div>
+                <div class="lunchtime">
+                  <p>Lunchtime Activities</p>
+                  <input type="checkbox" id="lunch-activity-1" name="lunch-activity-1" value="eat-lunch">
+                  <label for="lunch-activity-1">Have Lunch</label><br>
+                  <input type="checkbox" id="continue-morning-activity-1" name="continue-morning-activity-1" value="continue-morning-activity">
+                  <label for="continue-morning-activity-1">Continue Morning Activity</label><br>
+                  <input type="checkbox" id="leisure-time-1" name="leisure-time-1" value="leisure-time">
+                  <label for="leisure-time-1">Leisure Time</label><br>
+                  <input type="checkbox" id="included-activity-1" name="included-activity-1" value="included-activity">
+                  <label for="included-activity-1">Included Activity</label><br>
+                  <input type="checkbox" id="optional-activity-1" name="optional-activity-1" value="optional-activity">
+                  <label for="optional-activity-1">Optional Activity</label><br>
+                </div>
+                <div class="afternoon">
+                  <p>Afternoon Activities</p>
+                  <input type="checkbox" id="hotel-checkin-1" name="hotel-checkin-1" value="hotel-checkin">
+                  <label for="hotel-checkin-1">Hotel Checkin</label><br>
+                  <input type="checkbox" id="continue-morning-activity-1" name="continue-morning-activity-1" value="continue-morning-activity">
+                  <label for="continue-morning-activity-1">Continue Morning Activity</label><br>
+                  <input type="checkbox" id="leisure-time-1" name="leisure-time-1" value="leisure-time">
+                  <label for="leisure-time-1">Leisure Time</label><br>
+                  <input type="checkbox" id="included-activity-1" name="included-activity-1" value="included-activity">
+                  <label for="included-activity-1">Included Activity</label><br>
+                  <input type="checkbox" id="optional-activity-1" name="optional-activity-1" value="optional-activity">
+                  <label for="optional-activity-1">Optional Activity</label><br>
+                </div>
+                <div class="dinnertime">
+                  <p>Dinnertime Activities</p>
+                  <input type="checkbox" id="dinner-activity-1" name="dinner-activity-1" value="eat-dinner">
+                  <label for="dinner-activity-1">Have Dinner</label><br>
+                  <input type="checkbox" id="leisure-time-1" name="leisure-time-1" value="leisure-time">
+                  <label for="leisure-time-1">Leisure Time</label><br>
+                  <input type="checkbox" id="included-activity-1" name="included-activity-1" value="included-activity">
+                  <label for="included-activity-1">Included Activity</label><br>
+                  <input type="checkbox" id="optional-activity-1" name="optional-activity-1" value="optional-activity">
+                  <label for="optional-activity-1">Optional Activity</label><br>
+                </div>
+                <div class="evening">
+                  <p>Evening Activities</p>
+                  <input type="checkbox" id="leisure-time-1" name="leisure-time-1" value="leisure-time">
+                  <label for="leisure-time-1">Leisure Time</label><br>
+                  <input type="checkbox" id="included-activity-1" name="included-activity-1" value="included-activity">
+                  <label for="included-activity-1">Included Activity</label><br>
+                  <input type="checkbox" id="optional-activity-1" name="optional-activity-1" value="optional-activity">
+                  <label for="optional-activity-1">Optional Activity</label><br>
+                </div>
+              </div>
+              <div class="hotel-information">
+                <h6>Hotel Information</h6>
+              </div>
+            </div>-->
+          </div>
+      </div>
+
+    </section>
+  </main>
+</body>
+</html>
