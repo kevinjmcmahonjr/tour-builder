@@ -1,12 +1,14 @@
-.tb-main{
-  display:none;
-  background: lightgray;
-  border-radius: 15px;
-  padding: 15px;
-  width: calc(100vw - 10%);
-  margin: 15px auto;
-  min-height: 500px;
+/* -------------------------------------------------------------------------- */
+/*                          Tour Builder Style Sheet                          */
+/* -------------------------------------------------------------------------- */
+
+:root{
+  --border-radius: 10px;
+  --small-border-radius: 5px;
+  --large-border-radius: 15px;
 }
+
+/* ----------------------------- Loading Spinner ---------------------------- */
 .loader,
 .loader:before,
 .loader:after {
@@ -75,31 +77,112 @@
   }
 }
 
+/* --------------------------- Main App Container --------------------------- */
+.page-heading{
+  text-align: center;
+}
+.tb-main{
+  display:none;
+  background: lightgray;
+  border-radius: var(--large-border-radius);
+  padding: 15px;
+  width: calc(100vw - 10%);
+  margin: 15px auto;
+  min-height: 500px;
+}
+
+main.tb-main.initiated {
+  display:flex;
+  flex-wrap: wrap;
+}
+
 main > section{
+  display: flex;
   background: white;
   padding: 15px;
   margin: 15px;
-  border-radius: 10px;
+  border-radius: var(--border-radius);
 }
 
+main > section > h3{
+  margin: 10px;
+  border-bottom: 1px solid black;
+  width: 88%;
+  text-align: center;
+}
+
+/* ----------------------- General Information Section ---------------------- */
 .general-information{
-  display: block;
-  width: 30%;
-  float: left;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-basis: 500px;
+}
+.general-information > div{
+  margin: 0 auto;
+}
+.general-information > div p{
+  text-align: center;
+}
+.general-information-inputs > div{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  margin-top: .5em;
+}
+.general-information-inputs > div label{
+  white-space: nowrap;
+  margin-right: 15px;
+  flex-basis: 20%;
+}
+.general-information-inputs > div input{
+  width: initial;
+  flex-basis: 70%;
+}
+.general-information-inputs > div p{
+  margin-top: .5em;
+  text-align: center;
+}
+.date-selections > div{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1em;
+  padding: .25em;
+  font-size: 1.2em;
+  font-weight: bold;
+  width: 100%;
+  border-radius: var(--small-border-radius);
+}
+.date-selections > div p{
+  margin:0;
+}
+.departure-date-field{
+  background: khaki;
+}
+.start-date-field{
+  background: limegreen;
+}
+.end-date-field{
+  background: red;
+  color: white;
 }
 
-.tour-overview{
-  display: none;
-  width: 58%;
-  float:right;
+/* ----------------------- Calendar Flarpickr Styling ----------------------- */
+div.calendar-field.flatpickr-input.form-control[readonly].input{
+  height: 0px;
+  padding: 0px;
+  border:0px;
 }
-
-.tour-itinerary{
-  display: none;
-  clear: both;
+.flatpickr-calendar{
+  margin: 0 auto;
 }
-
-/* Calendar Flarpickr Styling */
+.date-selections .calendar-field.flatpickr-input,
+.date-selections .calendar-field.flatpickr-input.form-control.input{
+  padding: 0;
+  margin: 0;
+  height: 0;
+}
 .flatpickr-day.selected.startRange{
   background-color: limegreen;
   border-color: limegreen;
@@ -107,6 +190,11 @@ main > section{
 .flatpickr-day.selected.endRange{
   background-color: red;
   border-color: red
+}
+.flatpickr-calendar.disabled{
+  pointer-events: none;
+  background: lightgray;
+  cursor: not-allowed;
 }
 
 input:read-only{
@@ -117,4 +205,177 @@ input:read-only{
 }
 input:read-only:focus{
   outline: none;
+}
+
+.activities p{
+  font-weight: bold;
+}
+
+.tour-itinerary input[type="checkbox"][readonly],
+.tour-itinerary input[type="checkbox"][readonly] + label{
+  pointer-events: none;
+  color: lightgray;
+}
+
+.flatpickr-day.departure-date{
+  background: khaki;
+}
+
+/* -------------------------- Tour Overview Section ------------------------- */
+.tour-overview{
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  flex-grow: 2;
+}
+.tour-overview.initiated{
+  display: flex;
+}
+.tour-overview .table{
+  text-align: center;
+}
+.overview-table-body tr:first-child .overview-copy button{
+  display: none;
+}
+
+/* ------------------------- Tour Itinerary Section ------------------------- */
+.tour-itinerary{
+  display: none;
+  flex-basis: 100%;
+}
+
+#tour-itinerary-tabs{
+  border:none;
+}
+
+#tour-itinerary-tabs-content{
+  background: #428bca;
+  border-radius: var(--border-radius);
+}
+.tour-itinerary-tab.ui-tabs-panel{
+  padding: 1.2em;
+}
+/* .tour-itinerary-tab.ui-tabs-panel{
+  background: #428bca;
+} */
+.itinerary-day-overview{
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+  align-items: center;
+  justify-content: space-between;
+  background: khaki;
+  padding: 15px;
+  border-radius: var(--border-radius);
+}
+.itinerary-day-overview > *{
+  margin: 0;
+}
+.itinerary-overview-key{
+  font-weight: bold;
+}
+
+#tour-itinerary-tab-nav{
+  padding: .4em .4em 0 .4em;
+  border: none;
+  background: white;
+}
+
+#tour-itinerary-tab-nav .tour-itinerary-tab-item.ui-tab{
+  margin: 0 .5em;
+}
+
+#tour-itinerary-tab-nav .tour-itinerary-tab-item.ui-tabs-active{
+  background: #428bca;
+  border: none;
+  margin: 0 .5em;
+}
+#tour-itinerary-tab-nav .tour-itinerary-tab-item.ui-tab a.ui-tabs-anchor{
+  font-size: 1.2em;
+}
+#tour-itinerary-tab-nav .tour-itinerary-tab-item.ui-tab a.ui-tabs-anchor:focus{
+  outline: none;
+}
+
+.tour-add-activity-button{
+  padding: .5em;
+  font-weight: bold;
+  font-size: 1.2em;
+  margin: 1em 0 0 0 ;
+}
+
+
+/* ------------------------ Tour Ininerary Activites ------------------------ */
+.tour-initnerary-day-activiies{
+  margin: 1em;
+}
+.tour-activity-header{
+  display: flex;
+  flex-basis: 100%;
+  justify-content: flex-start;
+  align-items: center;
+}
+.tour-itinerary-activity > div > div.tour-activity-ui-actions{
+  margin-left: auto;
+  display: block;
+}
+
+.activity-main-information{
+  display: flex;
+}
+.activity-additional-information{
+  display: flex;;
+}
+.tour-itinerary-activity{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: start;
+  padding: 15px;
+  margin: 15px 0;
+  border-radius: var(--border-radius);
+  flex: 0 0 98%;
+  background: white;
+}
+.tour-itinerary-activity > div{
+  /* display: flex; */
+  /* flex-direction: column; */
+  padding: 0 15px;
+  border-bottom: 1px solid black;
+}
+.tour-itinerary-activity > div > div{
+  display: flex;
+  flex-direction: column;
+  padding: 0 15px;
+  border-right: 1px solid black;
+}
+
+/* -------------------------------- GUI Style ------------------------------- */
+.disappear{
+  opacity: 0;
+  height: 0;
+}
+
+.reappear{
+  opacity: 1;
+  height: initial;
+}
+
+/* ----------------------------- Save and Submit ---------------------------- */
+main > section.tour-submission{
+  display: none;
+}
+.tour-submission.saveable{
+  display: flex;;
+}
+
+/* ------------------------------ Save Results ------------------------------ */
+.tour-save-result{
+  display: none;
+  opacity: 0;
+  height: 0;
+}
+.tour-save-result.complete{
+  display: flex;
+  opacity: 1;
+  height: initial;
 }
