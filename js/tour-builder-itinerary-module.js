@@ -66,7 +66,9 @@ let guiElements ={
     tourInformation:{
         container: document.querySelector('.general-information')
     },
-    tourTitle: document.getElementById('tour-title'),
+    tourTitle: document.querySelector('#tour-title'),
+    tourAgent: document.querySelector('#tour-agent'),
+    tourId: document.querySelector('#tour-id'),
     calendar: jQuery(".calendar-field")[0],
     departureDate: jQuery('.departure-date-display'),
     startDate: jQuery('.starting-date-display'),
@@ -87,22 +89,20 @@ let guiElements ={
         container: document.querySelector('.tour-itinerary'),
         nav: document.querySelector("#tour-itinerary-tab-nav"),
         navItems: document.querySelectorAll("#tour-itinerary-tab-nav > .tour-itinerary-tab-item"),
-        //navItemsLink: this.navItems.querySelector('a'),
-        //navItemsNumber: this.navItems.querySelector('.tour-itinerary-tab-day-number'),
         tabsContainer: document.querySelector("#tour-itinerary-tabs-content"),
         tabs: document.querySelectorAll("#tour-itinerary-tabs-content > .tour-itinerary-tab"),
         updateNav: function(){
-            return this.navItems = jQuery("#tour-itinerary-tab-nav > .tour-itinerary-tab-item");
+            return this.navItems = document.querySelectorAll("#tour-itinerary-tab-nav > .tour-itinerary-tab-item");
         },
         updateTab: function(){
-            return this.tabs = jQuery("#tour-itinerary-tabs-content > .tour-itinerary-tab");
+            return this.tabs = document.querySelectorAll("#tour-itinerary-tabs-content > .tour-itinerary-tab");
         }
     },
     tourSave:{
         container: document.querySelector('.tour-submission')
     },
     tourResuts:{
-        container: documents.querySelector('.tour-save-results')
+        container: document.querySelector('.tour-save-results')
     }
 }
 
@@ -146,7 +146,8 @@ document.querySelector('#create-itinerary').addEventListener("click", function()
             initializeItinerary();
         }
         toggleOverviewInputs();
-        jQuery(guiElements.tourItinerary.container).fadeIn("slow");
+        guiElements.tourItinerary.container.classList.add('initiated');
+        //jQuery(guiElements.tourItinerary.container).fadeIn("slow");
     }
 });
 
@@ -158,47 +159,70 @@ document.querySelector('#save-tour').addEventListener("click", function(){
         return;
         }
     }
+    let tourSummary = createSummary();
     toggleAllModules();
-    let entireApp = document.querySelector('main.tb-main');
-    let entireMarkUp = entireApp.outerHTML;
-    console.log(entireMarkUp);
+
+    window.scroll({
+        top: 0,
+        behavior: 'smooth'
+    });
+    document.querySelector('.tb-main').insertAdjacentHTML('beforeend', '<div class="loader"></div>');
     let tourDataSubmit = new FormData();
     tourDataSubmit.append( 'action', 'tour_builder_save_tour');
     tourDataSubmit.append( 'nonce', WP_Variables.nonce);
-    tourDataSubmit.append( 'is_user_logged_in', WP_Variables.is_user_logged_in );
-    tourDataSubmit.append( 'tour_title', tourData.tourTitle );
-    tourDataSubmit.append( 'tour_data', tourData);
-    tourDataSubmit.append( 'html_blob', entireMarkUp );
+    tourDataSubmit.append( 'is_user_logged_in', WP_Variables.is_user_logged_in);
+    tourDataSubmit.append( 'tour_title', tourData.tourTitle);
+    tourDataSubmit.append( 'tour_id', tourData.tourId);
+    tourDataSubmit.append( 'tour_data', JSON.stringify(tourData));
+    tourDataSubmit.append( 'tour_summary', tourSummary);
+    
     fetch(WP_Variables.ajax_url, {
         method: 'POST',
         credentials: 'same-origin',
         body: tourDataSubmit
-    })
-    .then((response) => response.json())
-    .then((data) => {
-        console.log(data);
-        if (data){
-            alert("success");
-        }
-    })
-    .catch((error) => {
-        console.log(error);
-    })
-
-    let itineraryMarkUp = document.querySelectorAll('#tour-itinerary-tabs-content .tour-itinerary-tab');
-    itineraryMarkUp.forEach(function(dayDiv, i){
-        let inputField = dayDiv.querySelectorAll('input');
-        console.log(i);
-        let checkedFields = [];
-        inputField.forEach(function(inputField, ii){
-            inputField.readOnly = true;
-            if (inputField.checked){console.log(i);
-
-            }
+    }).then( result => result.json())
+        .catch(error => {
+            console.log("Something went wrong: " + error);
         })
-    });
-    let entireView = document.querySelector('.tb-main');
-    
+        .then(response => {
+            if (response.success){
+                console.log("success");
+                document.querySelector('.tb-main').insertAdjacentHTML('beforeend', "Success! Your Tour Build has been submitted! Here's your summary below.");
+                document.querySelector('.tb-main').insertAdjacentHTML('beforeend', tourSummary);
+                document.querySelector('.loader').remove();
+            } else {
+                console.log('Error');
+            }
+        });
+
+
+    // fetch(WP_Variables.ajax_url, {
+    //     method: 'POST',
+    //     credentials: 'same-origin',
+    //     body: tourDataSubmit
+    // })
+    // .then((response) => response.json())
+    // .then((data) => {
+    //     document.querySelector('.tb-main').insertAdjacentHTML('beforeend', "Success! Your Tour Build has been submitted! Here's your summary below.");
+    //     document.querySelector('.tb-main').insertAdjacentHTML('beforeend', tourSummary);
+    //     document.querySelector('.loader').remove();
+    // })
+    // .catch((error) => {
+    //     console.log(error);
+    // })
+
+    // let itineraryMarkUp = document.querySelectorAll('#tour-itinerary-tabs-content .tour-itinerary-tab');
+    // itineraryMarkUp.forEach(function(dayDiv, i){
+    //     let inputField = dayDiv.querySelectorAll('input');
+    //     console.log(i);
+    //     let checkedFields = [];
+    //     inputField.forEach(function(inputField, ii){
+    //         inputField.readOnly = true;
+    //         if (inputField.checked){console.log(i);
+
+    //         }
+    //     })
+    // });
 })
 
 // Initialize Tour Builder Application
@@ -320,7 +344,7 @@ function setDaysOfItinieray(){
 
     for (let days = 0; days < duration; days++){
         let actualDay = days + 1;
-        tourData.itinerary.push({dayNumber: actualDay, date: new Date(currentDate)});
+        tourData.itinerary.push({dayNumber: actualDay, date: new Date(currentDate), activities: []});
         currentDate = getNextDay(currentDate);
     }
 
@@ -357,6 +381,8 @@ function calculateOverview(){
 }
 
 function setTourTitle(){
+    tourData.tourAgent = guiElements.tourAgent.value;
+    tourData.tourId = guiElements.tourId.value;
     tourData.tourTitle = guiElements.tourTitle.value;
 }
 function setDepartureDate(){
@@ -433,7 +459,7 @@ return `
       <p class="overnight-city"><span class="itinerary-overview-key">Overnight City:</span> ${tourData.itinerary[i].overnightCity}</p>
       <p class="overnight-hotel"><span class="itinerary-overview-key">Overnight Hotel:</span> ${tourData.itinerary[i].overnightHotel}</p>
     </div>
-    <div class="tour-initnerary-day-activities" id="tour-itinerary-activities-day-${actualDay}">
+    <div class="tour-itinerary-day-activities" id="tour-itinerary-activities-day-${actualDay}">
                 <!-- Begin Javascript Template-->
                 
                 <!-- End Javascript Template-->

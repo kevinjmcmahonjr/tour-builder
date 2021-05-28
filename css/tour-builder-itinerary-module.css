@@ -80,6 +80,13 @@
 /* --------------------------- Main App Container --------------------------- */
 .page-heading{
   text-align: center;
+  line-height: .8;
+  margin: 0;
+  padding: 30px 0 0 0;
+}
+.page-heading small{
+  font-weight: 200;
+  font-size:50%;
 }
 .tb-main{
   display:none;
@@ -220,31 +227,54 @@ input:read-only:focus{
 .flatpickr-day.departure-date{
   background: khaki;
 }
+.flatpickr-innerContainer{
+  display: flex;
+  justify-content: center;
+}
 
 /* -------------------------- Tour Overview Section ------------------------- */
 .tour-overview{
-  display: none;
+  display: flex;
+  opacity: 0;
+  transform: scaleY(0);
+  transform-origin: top;
   flex-direction: column;
   align-items: center;
   flex-grow: 2;
+  transition: opacity .5s ease, transform .5s ease;
 }
 .tour-overview.initiated{
-  display: flex;
+  opacity: 1;
+  transform: scaleY(1);
 }
 .tour-overview .table{
   text-align: center;
 }
+.tour-overview .table tr.overview-day-row > td.overview-day-column{
+  vertical-align: middle;
+} 
 .overview-table-body tr:first-child .overview-copy button{
   display: none;
 }
 
 /* ------------------------- Tour Itinerary Section ------------------------- */
 .tour-itinerary{
-  display: none;
   flex-basis: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  opacity: 0;
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: opacity .5s ease, transform .5s ease;
+}
+.tour-itinerary.initiated{
+  opacity: 1;
+  transform: scaleY(1);
 }
 
 #tour-itinerary-tabs{
+  width: 100%;
   border:none;
 }
 
@@ -306,7 +336,7 @@ input:read-only:focus{
 
 
 /* ------------------------ Tour Ininerary Activites ------------------------ */
-.tour-initnerary-day-activiies{
+.tour-itinerary-day-activiies{
   margin: 1em;
 }
 .tour-activity-header{
@@ -315,16 +345,16 @@ input:read-only:focus{
   justify-content: flex-start;
   align-items: center;
 }
+
+.tour-activity-header p{
+  margin: 0;
+}
 .tour-itinerary-activity > div > div.tour-activity-ui-actions{
   margin-left: auto;
   display: block;
 }
-
-.activity-main-information{
-  display: flex;
-}
 .activity-additional-information{
-  display: flex;;
+  display: flex;
 }
 .tour-itinerary-activity{
   display: flex;
@@ -335,6 +365,14 @@ input:read-only:focus{
   border-radius: var(--border-radius);
   flex: 0 0 98%;
   background: white;
+  transform: scale(1);
+  opacity: 1;
+  transition: opacity .5s ease-in-out, transform .5s ease-in-out;
+}
+.tour-itinerary-activity.deleting{
+  opacity: 0;
+  transform: scale(0);
+  overflow: hidden;
 }
 .tour-itinerary-activity > div{
   /* display: flex; */
@@ -342,22 +380,62 @@ input:read-only:focus{
   padding: 0 15px;
   border-bottom: 1px solid black;
 }
-.tour-itinerary-activity > div > div{
+.tour-itinerary-activity > .tour-activity-header > div{
   display: flex;
   flex-direction: column;
   padding: 0 15px;
-  border-right: 1px solid black;
 }
+
+.tour-itinerary-activity .activity-main-information,
+.tour-itinerary-activity .activity-additional-information{
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.tour-itinerary-activity > .activity-main-information h4,
+.tour-itinerary-activity > .activity-additional-information h4{
+  margin-bottom: 0;
+  flex-basis: 100%;
+}
+
+.tour-itinerary-activity > .activity-main-information > div,
+.tour-itinerary-activity > .activity-additional-information > div{
+  display: flex;
+  flex-direction: column;
+  padding: 5px 10px;
+  background: gainsboro;
+  margin: 10px 5px;
+}
+
+.tour-itinerary-activity > .activity-main-information > div:first-of-type{
+  margin-left: 0;
+}
+
+.tour-itinerary-activity input[type='text'],
+.tour-itinerary-activity textarea{
+  background: white;
+  border: 1px solid black;
+}
+
+/* .tour-itinerary-activity .activity-main-information div[class^="tour-activity"]:not(.tour-activity-select){
+  opacity: 0;
+  transition: opacity .5s ease-in;
+} */
 
 /* -------------------------------- GUI Style ------------------------------- */
 .disappear{
   opacity: 0;
   height: 0;
+  display: none;
 }
 
 .reappear{
   opacity: 1;
   height: initial;
+}
+
+.reveal{
+  opacity: 1;
 }
 
 /* ----------------------------- Save and Submit ---------------------------- */

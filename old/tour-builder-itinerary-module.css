@@ -1,0 +1,459 @@
+/* -------------------------------------------------------------------------- */
+/*                          Tour Builder Style Sheet                          */
+/* -------------------------------------------------------------------------- */
+
+:root{
+  --border-radius: 10px;
+  --small-border-radius: 5px;
+  --large-border-radius: 15px;
+}
+
+/* ----------------------------- Loading Spinner ---------------------------- */
+.loader,
+.loader:before,
+.loader:after {
+  border-radius: 50%;
+}
+.loader {
+  color: #ff0000;
+  font-size: 11px;
+  text-indent: -99999em;
+  margin: 55px auto;
+  position: relative;
+  width: 10em;
+  height: 10em;
+  box-shadow: inset 0 0 0 1em;
+  -webkit-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  transform: translateZ(0);
+}
+.loader:before,
+.loader:after {
+  position: absolute;
+  content: '';
+}
+.loader:before {
+  width: 5.2em;
+  height: 10.2em;
+  background: #ffffff;
+  border-radius: 10.2em 0 0 10.2em;
+  top: -0.1em;
+  left: -0.1em;
+  -webkit-transform-origin: 5.1em 5.1em;
+  transform-origin: 5.1em 5.1em;
+  -webkit-animation: load2 2s infinite ease 1.5s;
+  animation: load2 2s infinite ease 1.5s;
+}
+.loader:after {
+  width: 5.2em;
+  height: 10.2em;
+  background: #ffffff;
+  border-radius: 0 10.2em 10.2em 0;
+  top: -0.1em;
+  left: 4.9em;
+  -webkit-transform-origin: 0.1em 5.1em;
+  transform-origin: 0.1em 5.1em;
+  -webkit-animation: load2 2s infinite ease;
+  animation: load2 2s infinite ease;
+}
+@-webkit-keyframes load2 {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@keyframes load2 {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+/* --------------------------- Main App Container --------------------------- */
+.page-heading{
+  text-align: center;
+  line-height: .8;
+  margin: 0;
+  padding: 30px 0 0 0;
+}
+.page-heading small{
+  font-weight: 200;
+  font-size:50%;
+}
+.tb-main{
+  display:none;
+  background: lightgray;
+  border-radius: var(--large-border-radius);
+  padding: 15px;
+  width: calc(100vw - 10%);
+  margin: 15px auto;
+  min-height: 500px;
+}
+
+main.tb-main.initiated {
+  display:flex;
+  flex-wrap: wrap;
+}
+
+main > section{
+  display: flex;
+  background: white;
+  padding: 15px;
+  margin: 15px;
+  border-radius: var(--border-radius);
+}
+
+main > section > h3{
+  margin: 10px;
+  border-bottom: 1px solid black;
+  width: 88%;
+  text-align: center;
+}
+
+/* ----------------------- General Information Section ---------------------- */
+.general-information{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-basis: 500px;
+}
+.general-information > div{
+  margin: 0 auto;
+}
+.general-information > div p{
+  text-align: center;
+}
+.general-information-inputs > div{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  margin-top: .5em;
+}
+.general-information-inputs > div label{
+  white-space: nowrap;
+  margin-right: 15px;
+  flex-basis: 20%;
+}
+.general-information-inputs > div input{
+  width: initial;
+  flex-basis: 70%;
+}
+.general-information-inputs > div p{
+  margin-top: .5em;
+  text-align: center;
+}
+.date-selections > div{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1em;
+  padding: .25em;
+  font-size: 1.2em;
+  font-weight: bold;
+  width: 100%;
+  border-radius: var(--small-border-radius);
+}
+.date-selections > div p{
+  margin:0;
+}
+.departure-date-field{
+  background: khaki;
+}
+.start-date-field{
+  background: limegreen;
+}
+.end-date-field{
+  background: red;
+  color: white;
+}
+
+/* ----------------------- Calendar Flarpickr Styling ----------------------- */
+div.calendar-field.flatpickr-input.form-control[readonly].input{
+  height: 0px;
+  padding: 0px;
+  border:0px;
+}
+.flatpickr-calendar{
+  margin: 0 auto;
+}
+.date-selections .calendar-field.flatpickr-input,
+.date-selections .calendar-field.flatpickr-input.form-control.input{
+  padding: 0;
+  margin: 0;
+  height: 0;
+}
+.flatpickr-day.selected.startRange{
+  background-color: limegreen;
+  border-color: limegreen;
+}
+.flatpickr-day.selected.endRange{
+  background-color: red;
+  border-color: red
+}
+.flatpickr-calendar.disabled{
+  pointer-events: none;
+  background: lightgray;
+  cursor: not-allowed;
+}
+
+input:read-only{
+  border: 2px solid black;
+  background: lightgrey;
+  color: black;
+  cursor: not-allowed;
+}
+input:read-only:focus{
+  outline: none;
+}
+
+.activities p{
+  font-weight: bold;
+}
+
+.tour-itinerary input[type="checkbox"][readonly],
+.tour-itinerary input[type="checkbox"][readonly] + label{
+  pointer-events: none;
+  color: lightgray;
+}
+
+.flatpickr-day.departure-date{
+  background: khaki;
+}
+.flatpickr-innerContainer{
+  display: flex;
+  justify-content: center;
+}
+
+/* -------------------------- Tour Overview Section ------------------------- */
+.tour-overview{
+  display: flex;
+  opacity: 0;
+  transform: scaleY(0);
+  transform-origin: top;
+  flex-direction: column;
+  align-items: center;
+  flex-grow: 2;
+  transition: opacity .5s ease, transform .5s ease;
+}
+.tour-overview.initiated{
+  opacity: 1;
+  transform: scaleY(1);
+}
+.tour-overview .table{
+  text-align: center;
+}
+.tour-overview .table tr.overview-day-row > td.overview-day-column{
+  vertical-align: middle;
+} 
+.overview-table-body tr:first-child .overview-copy button{
+  display: none;
+}
+
+/* ------------------------- Tour Itinerary Section ------------------------- */
+.tour-itinerary{
+  flex-basis: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  opacity: 0;
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: opacity .5s ease, transform .5s ease;
+}
+.tour-itinerary.initiated{
+  opacity: 1;
+  transform: scaleY(1);
+}
+
+#tour-itinerary-tabs{
+  width: 100%;
+  border:none;
+}
+
+#tour-itinerary-tabs-content{
+  background: #428bca;
+  border-radius: var(--border-radius);
+}
+.tour-itinerary-tab.ui-tabs-panel{
+  padding: 1.2em;
+}
+/* .tour-itinerary-tab.ui-tabs-panel{
+  background: #428bca;
+} */
+.itinerary-day-overview{
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+  align-items: center;
+  justify-content: space-between;
+  background: khaki;
+  padding: 15px;
+  border-radius: var(--border-radius);
+}
+.itinerary-day-overview > *{
+  margin: 0;
+}
+.itinerary-overview-key{
+  font-weight: bold;
+}
+
+#tour-itinerary-tab-nav{
+  padding: .4em .4em 0 .4em;
+  border: none;
+  background: white;
+}
+
+#tour-itinerary-tab-nav .tour-itinerary-tab-item.ui-tab{
+  margin: 0 .5em;
+}
+
+#tour-itinerary-tab-nav .tour-itinerary-tab-item.ui-tabs-active{
+  background: #428bca;
+  border: none;
+  margin: 0 .5em;
+}
+#tour-itinerary-tab-nav .tour-itinerary-tab-item.ui-tab a.ui-tabs-anchor{
+  font-size: 1.2em;
+}
+#tour-itinerary-tab-nav .tour-itinerary-tab-item.ui-tab a.ui-tabs-anchor:focus{
+  outline: none;
+}
+
+.tour-add-activity-button{
+  padding: .5em;
+  font-weight: bold;
+  font-size: 1.2em;
+  margin: 1em 0 0 0 ;
+}
+
+
+/* ------------------------ Tour Ininerary Activites ------------------------ */
+.tour-itinerary-day-activiies{
+  margin: 1em;
+}
+.tour-activity-header{
+  display: flex;
+  flex-basis: 100%;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.tour-activity-header p{
+  margin: 0;
+}
+.tour-itinerary-activity > div > div.tour-activity-ui-actions{
+  margin-left: auto;
+  display: block;
+}
+.activity-additional-information{
+  display: flex;
+}
+.tour-itinerary-activity{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: start;
+  padding: 15px;
+  margin: 15px 0;
+  border-radius: var(--border-radius);
+  flex: 0 0 98%;
+  background: white;
+  transform: scale(1);
+  opacity: 1;
+  transition: opacity .5s ease-in-out, transform .5s ease-in-out;
+}
+.tour-itinerary-activity.deleting{
+  opacity: 0;
+  transform: scale(0);
+  overflow: hidden;
+}
+.tour-itinerary-activity > div{
+  /* display: flex; */
+  /* flex-direction: column; */
+  padding: 0 15px;
+  border-bottom: 1px solid black;
+}
+.tour-itinerary-activity > .tour-activity-header > div{
+  display: flex;
+  flex-direction: column;
+  padding: 0 15px;
+}
+
+.tour-itinerary-activity .activity-main-information,
+.tour-itinerary-activity .activity-additional-information{
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.tour-itinerary-activity > .activity-main-information h4,
+.tour-itinerary-activity > .activity-additional-information h4{
+  margin-bottom: 0;
+  flex-basis: 100%;
+}
+
+.tour-itinerary-activity > .activity-main-information > div,
+.tour-itinerary-activity > .activity-additional-information > div{
+  display: flex;
+  flex-direction: column;
+  padding: 5px 10px;
+  background: gainsboro;
+  margin: 10px 5px;
+}
+
+.tour-itinerary-activity > .activity-main-information > div:first-of-type{
+  margin-left: 0;
+}
+
+.tour-itinerary-activity input[type='text'],
+.tour-itinerary-activity textarea{
+  background: white;
+  border: 1px solid black;
+}
+
+/* .tour-itinerary-activity .activity-main-information div[class^="tour-activity"]:not(.tour-activity-select){
+  opacity: 0;
+  transition: opacity .5s ease-in;
+} */
+
+/* -------------------------------- GUI Style ------------------------------- */
+.disappear{
+  opacity: 0;
+  height: 0;
+  display: none;
+}
+
+.reappear{
+  opacity: 1;
+  height: initial;
+}
+
+.reveal{
+  opacity: 1;
+}
+
+/* ----------------------------- Save and Submit ---------------------------- */
+main > section.tour-submission{
+  display: none;
+}
+.tour-submission.saveable{
+  display: flex;;
+}
+
+/* ------------------------------ Save Results ------------------------------ */
+.tour-save-result{
+  display: none;
+  opacity: 0;
+  height: 0;
+}
+.tour-save-result.complete{
+  display: flex;
+  opacity: 1;
+  height: initial;
+}

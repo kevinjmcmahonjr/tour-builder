@@ -6,13 +6,14 @@
 
 // Create Object to hold Tour Information
 const tourData = {
-    tourName: "",
+    tourTitle: "",
     tourID: "",
     tourAgent:"",
     tourLead: "",
     dateRange: "",
     startDate: "",
     endDate: "",
+    departureDate: "",
     numberOfDays: "",
     numberOfNights: "",
     itinerary: []
@@ -26,8 +27,27 @@ const itineraryDay = {
     dayNumber: "",
     overnightCity: "",
     overnightHotel: "",
-    activites: "",
+    activites: [],
     includes: ""
+}
+
+//Create Skelton Activity Object 
+const dayActivity = {
+    type: "",
+    meal: "",
+    mealLocation: "",
+    time: "",
+    duration: "",
+    realTime: "",
+    location: "",
+    description: "",
+    transportationRequired: "",
+    fees: "",
+    guideRequired: "",
+    guideSpecialty: "",
+    guidePreference: "",
+    notes: "",
+    optional: ""
 }
 
 // Create Object for checking state of things
@@ -43,7 +63,14 @@ const stateCheck = {
 
 // Create Object for storing HTML Elements
 let guiElements ={
+    tourInformation:{
+        container: document.querySelector('.general-information')
+    },
+    tourTitle: document.querySelector('#tour-title'),
+    tourAgent: document.querySelector('#tour-agent'),
+    tourId: document.querySelector('#tour-id'),
     calendar: jQuery(".calendar-field")[0],
+    departureDate: jQuery('.departure-date-display'),
     startDate: jQuery('.starting-date-display'),
     endDate: jQuery('.ending-date-display'),
     numberOfDays: jQuery(".total-days")[0],
@@ -62,44 +89,34 @@ let guiElements ={
         container: document.querySelector('.tour-itinerary'),
         nav: document.querySelector("#tour-itinerary-tab-nav"),
         navItems: document.querySelectorAll("#tour-itinerary-tab-nav > .tour-itinerary-tab-item"),
-        //navItemsLink: this.navItems.querySelector('a'),
-        //navItemsNumber: this.navItems.querySelector('.tour-itinerary-tab-day-number'),
         tabsContainer: document.querySelector("#tour-itinerary-tabs-content"),
         tabs: document.querySelectorAll("#tour-itinerary-tabs-content > .tour-itinerary-tab"),
         updateNav: function(){
-            return this.navItems = jQuery("#tour-itinerary-tab-nav > .tour-itinerary-tab-item");
+            return this.navItems = document.querySelectorAll("#tour-itinerary-tab-nav > .tour-itinerary-tab-item");
         },
         updateTab: function(){
-            return this.tabs = jQuery("#tour-itinerary-tabs-content > .tour-itinerary-tab");
+            return this.tabs = document.querySelectorAll("#tour-itinerary-tabs-content > .tour-itinerary-tab");
         }
+    },
+    tourSave:{
+        container: document.querySelector('.tour-submission')
+    },
+    tourResuts:{
+        container: document.querySelector('.tour-save-results')
     }
 }
 
-/*
-guiElements.tourOverview.lockButton.addEventListener('click', readOnlyInputs(guiElements.tourOverview.container));
-function readOnlyInputs(parent){
-    console.log(parent);
-    let inputs = parent.querySelectorAll("input");
-    console.log(inputs);
-    //inputs.forEach(input => input.setAttribute("readonly"));
-}*/
-
-/*
-document.querySelector('#lock-overview').addEventListener("click", function(){
-    let inputcontainer = document.querySelector('.tour-overview');
-    let inputs = inputcontainer.querySelectorAll('input');
-    if (inputs[0].readOnly){
-        for (let i = 0; i < inputs.length; i++){
-            inputs[i].readOnly = false;
-        }
-        this.innerText = "Lock Overview";
-    } else {
-        for (let i = 0; i < inputs.length; i++){
-            inputs[i].readOnly = true;
-        }
-        this.innerText = "Unlock Overview";
-    }
-}); */
+function toggleAllModules(){
+    let modules = [
+        guiElements.tourInformation.container,
+        guiElements.tourOverview.container,
+        guiElements.tourItinerary.container,
+        guiElements.tourSave.container
+    ];
+    modules.forEach( (module) => {
+        module.classList.toggle('disappear');
+    });
+}
 
 function toggleOverviewInputs(){
     let inputcontainer = document.querySelector('.tour-overview');
@@ -129,26 +146,62 @@ document.querySelector('#create-itinerary').addEventListener("click", function()
             initializeItinerary();
         }
         toggleOverviewInputs();
-        jQuery(guiElements.tourItinerary.container).fadeIn("slow");
+        guiElements.tourItinerary.container.classList.add('initiated');
+        //jQuery(guiElements.tourItinerary.container).fadeIn("slow");
     }
 });
 
 document.querySelector('#save-tour').addEventListener("click", function(){
-    console.log("Make It Save");
-    let itineraryMarkUp = document.querySelectorAll('#tour-itinerary-tabs-content .tour-itinerary-tab');
-    itineraryMarkUp.forEach(function(dayDiv, i){
-        let inputField = dayDiv.querySelectorAll('input');
-        console.log(i);
-        let checkedFields = [];
-        inputField.forEach(function(inputField, ii){
-            inputField.readOnly = true;
-            if (inputField.checked){console.log(i);
+    if (tourData.tourTitle === "" || tourData.tourTitle === undefined || tourData.tourTitle === null){
+        tourData.tourTitle = guiElements.tourTitle.value;
+        if (tourData.tourTitle === "" || tourData.tourTitle === undefined || tourData.tourTitle === null){
+        alert("Please Enter Tour Title");
+        return;
+        }
+    }
+    let tourSummary = createSummary();
+    toggleAllModules();
 
-            }
-        })
+    window.scroll({
+        top: 0,
+        behavior: 'smooth'
     });
-    let entireView = document.querySelector('.tb-main');
-    
+    document.querySelector('.tb-main').insertAdjacentHTML('beforeend', '<div class="loader"></div>');
+    let tourDataSubmit = new FormData();
+    tourDataSubmit.append( 'action', 'tour_builder_save_tour');
+    tourDataSubmit.append( 'nonce', WP_Variables.nonce);
+    tourDataSubmit.append( 'is_user_logged_in', WP_Variables.is_user_logged_in);
+    tourDataSubmit.append( 'tour_title', tourData.tourTitle);
+    tourDataSubmit.append( 'tour_id', tourData.tourID)
+    tourDataSubmit.append( 'tour_data', tourData);
+    tourDataSubmit.append( 'tour_summary', tourSummary);
+    fetch(WP_Variables.ajax_url, {
+        method: 'POST',
+        credentials: 'same-origin',
+        body: tourDataSubmit
+    })
+    .then((response) => response.json())
+    .then((data) => {
+        document.querySelector('.tb-main').insertAdjacentHTML('beforeend', "Success! Your Tour Build has been submitted! Here's your summary below.");
+        document.querySelector('.tb-main').insertAdjacentHTML('beforeend', tourSummary);
+        document.querySelector('.loader').remove();
+    })
+    .catch((error) => {
+        console.log(error);
+    })
+
+    // let itineraryMarkUp = document.querySelectorAll('#tour-itinerary-tabs-content .tour-itinerary-tab');
+    // itineraryMarkUp.forEach(function(dayDiv, i){
+    //     let inputField = dayDiv.querySelectorAll('input');
+    //     console.log(i);
+    //     let checkedFields = [];
+    //     inputField.forEach(function(inputField, ii){
+    //         inputField.readOnly = true;
+    //         if (inputField.checked){console.log(i);
+
+    //         }
+    //     })
+    // });
 })
 
 // Initialize Tour Builder Application
@@ -168,7 +221,7 @@ function getNextDay(date){
 
 // Helper function to calculate previous day
 function getPreviousDay(date){
-    var previousDay = new Date();
+    var previousDay = date;
     previousDay.setDate(previousDay.getDate() - 1);
     return previousDay;
 }
@@ -184,8 +237,10 @@ function setItinerary(){
 // Also applies the dates to the mark up
 function setVisualDates(){
     if (tourData.startDate != "" && tourData.endDate != ""){
-        var visualStartingDate = flatpickr.formatDate(tourData.startDate, "l - j F, Y");
-        var visualEndingDate = flatpickr.formatDate(tourData.endDate, 'l - j F, Y');
+        let visualStartingDate = flatpickr.formatDate(tourData.startDate, "l - j F, Y");
+        let visualEndingDate = flatpickr.formatDate(tourData.endDate, 'l - j F, Y');
+        let visualDepartureDate = flatpickr.formatDate(tourData.departureDate, 'l - j F, Y');
+        jQuery(guiElements.departureDate).text(visualDepartureDate);
         jQuery(guiElements.startDate).text(visualStartingDate);
         jQuery(guiElements.endDate).text(visualEndingDate);
     }
@@ -222,7 +277,20 @@ function initializeOverview(overviewDayRows, overviewTableBody){
     }
     guiElements.tourOverview.update();
     setDaysInOverview();
-    jQuery(guiElements.tourOverview.container).fadeIn("slow");
+    copyOverviewDay();
+    jQuery(guiElements.tourOverview.container).addClass("initiated");
+}
+
+function copyOverviewDay(){
+    let copyButtons = document.querySelectorAll('.overview-copy');
+    copyButtons.forEach( function(button) {
+        button.addEventListener('click', function(){
+            let parEl = button.parentElement;
+            let prevDayElement = parEl.previousElementSibling;
+            parEl.querySelector('.overview-overnight-city input').value = prevDayElement.querySelector('.overview-overnight-city input').value;
+            parEl.querySelector('.overview-overnight-hotel input').value = prevDayElement.querySelector('.overview-overnight-hotel input').value;
+        });
+    });
 }
 
 function initializeItinerary(){
@@ -240,10 +308,12 @@ function initializeItinerary(){
         let actualDay = days + 1;
         createTabNavItem(actualDay, days);
         createTabContent(actualDay, days);
+        initializeTourActivities(actualDay);
         jQuery('#tour-itinerary-tabs').tabs("refresh");
         jQuery('#tour-itinerary-tabs').tabs("option", "active", 0);
     }
     stateCheck.itinerary.initialized = true;
+    document.querySelector('.tour-submission').classList.add('saveable');
 }
 
 function setDaysOfItinieray(){
@@ -253,7 +323,7 @@ function setDaysOfItinieray(){
 
     for (let days = 0; days < duration; days++){
         let actualDay = days + 1;
-        tourData.itinerary.push({dayNumber: actualDay, date: new Date(currentDate)});
+        tourData.itinerary.push({dayNumber: actualDay, date: new Date(currentDate), activities: []});
         currentDate = getNextDay(currentDate);
     }
 
@@ -289,6 +359,23 @@ function calculateOverview(){
     var endDate = new Date(tourData.endDate);
 }
 
+function setTourTitle(){
+    tourData.tourAgent = guiElements.tourAgent.value;
+    tourData.tourId = guiElements.tourId.value;
+    tourData.tourTitle = guiElements.tourTitle.value;
+}
+function setDepartureDate(){
+    //Save Departure Date in Object
+    let departureDate = new Date(tourData.startDate);
+    getPreviousDay(departureDate);
+    tourData.departureDate = departureDate;
+
+    // Show Departure Date in Calendar
+    let visualDepartureDate = document.querySelector('.date-selections .flatpickr-days .startRange');
+    visualDepartureDate = visualDepartureDate.previousElementSibling;
+    visualDepartureDate.classList.add('departure-date');
+}
+
 // Set up calendar GUI
 // Have calendar update fields
 function setupDatePicker(){
@@ -304,6 +391,8 @@ function setupDatePicker(){
                 tourData.dateRange = dateRange;
                 tourData.startDate = dateRange[0];
                 tourData.endDate = dateRange[1];
+                setDepartureDate();
+                setTourTitle();
                 setVisualDates();
                 calculateDaysOvernights();
                 setDaysOfItinieray();
@@ -319,7 +408,7 @@ function hideLoaderShowBuilder() {
     setTimeout(function(){
         jQuery('.loader').fadeOut("slow");
         setTimeout(function(){
-            jQuery('.tb-main').fadeIn("slow");
+            jQuery('.tb-main').addClass('initiated');
             jQuery('.loader').remove();
         }, 500);
     }, 2500)
@@ -339,87 +428,22 @@ function showTabs(){
 jQuery(document).ready(initializeBuilder);
 //flatpickr.formatDate(tourData.startDate, "l - j F, Y")
 
+
 function itineraryTemplate(actualDay, i) {
 return `
-<div id="tour-itinerary-tabs-${actualDay}" class="tour-itinerary-tab">
-    <div class="overview">
-      <h4>Overview</h4>
-      <p class="tour-day-number"><b>Tour Day:</b> ${actualDay}</p>
-      <p class="tour-day-date"><b>Tour Date:</b> ${flatpickr.formatDate(tourData.itinerary[i].date, "l - j F, Y")}</p>
-      <p class="overnight-city"><b>Overnight City:</b> ${tourData.itinerary[i].overnightCity}</p>
-      <p class="overnight-hotel"><b>Overnight Hotel:</b> ${tourData.itinerary[i].overnightHotel}</p>
+<div id="tour-itinerary-tabs-${actualDay}" class="tour-itinerary-tab" data-itinerary-day="${actualDay}">
+    <div class="itinerary-day-overview">
+      <h4>Day ${actualDay} Overview</h4>
+      <p class="tour-day-date"><span class="itinerary-overview-key">Tour Date:</span> ${flatpickr.formatDate(tourData.itinerary[i].date, "l - j F, Y")}</p>
+      <p class="overnight-city"><span class="itinerary-overview-key">Overnight City:</span> ${tourData.itinerary[i].overnightCity}</p>
+      <p class="overnight-hotel"><span class="itinerary-overview-key">Overnight Hotel:</span> ${tourData.itinerary[i].overnightHotel}</p>
     </div>
-    <div class="included-meals">
-      <h4>Included Meals</h4>
-      <input type="checkbox" id="breakfast-included-day-${actualDay}" name="breakfast-included-day-${actualDay}" value="breakfast">
-      <label for="breakfast-included-day-${actualDay}">Breakfast</label>
-      <input type="checkbox" id="lunch-included-day-${actualDay}" name="lunch-included-day-${actualDay}" value="lunch">
-      <label for="lunch-check-ti-tab-${actualDay}">Lunch</label>
-      <input type="checkbox" id="dinner-included-day-${actualDay}" name="dinner-included-day-${actualDay}" value="dinner">
-      <label for="dinner-check-ti-tab-${actualDay}">Dinner</label>
+    <div class="tour-itinerary-day-activities" id="tour-itinerary-activities-day-${actualDay}">
+                <!-- Begin Javascript Template-->
+                
+                <!-- End Javascript Template-->
     </div>
-    <div class="activities">
-      <h4>Activities</h4>
-      <div class="morning">
-        <p>Morning Activities</p>
-        <input type="checkbox" id="eat-breakfast-day-${actualDay}" name="eat-breakfast-day-${actualDay}" value="eat-breakfast-day-${actualDay}">
-        <label for="eat-breakfast-day-${actualDay}">Have Breakfast</label><br>
-        <input type="checkbox" id="hotel-checkout-day-${actualDay}" name="hotel-checkout-day-${actualDay}" value="hotel-checkout-day-${actualDay}">
-        <label for="hotel-checkout-day-${actualDay}">Hotel Checkout</label><br>
-        <input type="checkbox" id="morning-leisure-time-day-${actualDay}" name="morning-leisure-time-day-${actualDay}" value="morning-leisure-time-day-${actualDay}">
-        <label for="morning-leisure-time-day-${actualDay}">Leisure Time</label><br>
-        <input type="checkbox" id="morning-included-activity-day-${actualDay}" name="morning-included-activity-day-${actualDay}" value="morning-included-activity-day-${actualDay}">
-        <label for="morning-included-activity-day-${actualDay}">Included Activity</label><br>
-        <input type="checkbox" id="morning-optional-activity-day-${actualDay}" name="morning-optional-activity-day-${actualDay}" value="morning-optional-activity-day-${actualDay}">
-        <label for="morning-optional-activity-day-${actualDay}">Optional Activity</label><br>
-      </div>
-      <div class="lunchtime">
-        <p>Lunchtime Activities</p>
-        <input type="checkbox" id="eat-lunch-day-${actualDay}" name="eat-lunch-day-${actualDay}" value="eat-lunch">
-        <label for="eat-lunch-day-${actualDay}">Have Lunch</label><br>
-        <input type="checkbox" id="continue-morning-activity-day-${actualDay}" name="continue-morning-activity-day-${actualDay}" value="continue-morning-activity-day-${actualDay}">
-        <label for="continue-morning-activity-day-${actualDay}">Continue Morning Activity</label><br>
-        <input type="checkbox" id="lunch-leisure-time-day-${actualDay}" name="lunch-leisure-time-day-${actualDay}" value="lunch-leisure-time-day-${actualDay}">
-        <label for="lunch-leisure-time-day-${actualDay}">Leisure Time</label><br>
-        <input type="checkbox" id="lunch-included-activity-day-${actualDay}" name="lunch-included-activity-day-${actualDay}" value="lunch-included-activity-day-${actualDay}">
-        <label for="lunch-included-activity-day-${actualDay}">Included Activity</label><br>
-        <input type="checkbox" id="lunch-optional-activity-day-${actualDay}" name="lunch-optional-activity-day-${actualDay}" value="lunch-optional-activity-day-${actualDay}">
-        <label for="lunch-optional-activity-day-${actualDay}">Optional Activity</label><br>
-      </div>
-      <div class="afternoon">
-        <p>Afternoon Activities</p>
-        <input type="checkbox" id="hotel-checkin-day-${actualDay}" name="hotel-checkin-day-${actualDay}" value="hotel-checkin-day-${actualDay}">
-        <label for="hotel-checkin-day-${actualDay}">Hotel Checkin</label><br>
-        <input type="checkbox" id="continue-morning-activity-${actualDay}" name="continue-morning-activity-${actualDay}" value="continue-morning-activity">
-        <label for="continue-morning-activity-${actualDay}">Continue Morning Activity</label><br>
-        <input type="checkbox" id="afternoon-leisure-time-day-${actualDay}" name="afternoon-leisure-time-day-${actualDay}" value="afternoon-leisure-time-day-${actualDay}">
-        <label for="afternoon-leisure-time-day-${actualDay}">Leisure Time</label><br>
-        <input type="checkbox" id="afternoon-included-activity-day-${actualDay}" name="afternoon-included-activity-day-${actualDay}" value="afternoon-included-activity-day-${actualDay}">
-        <label for="afternoon-included-activity-day-${actualDay}">Included Activity</label><br>
-        <input type="checkbox" id="afternoon-optional-activity-day-${actualDay}" name="afternoon-optional-activity-day-${actualDay}" value="afternoon-optional-activity-day-${actualDay}">
-        <label for="afternoon-optional-activity-day-${actualDay}">Optional Activity</label><br>
-      </div>
-      <div class="dinnertime">
-        <p>Dinnertime Activities</p>
-        <input type="checkbox" id="eat-dinner-day-${actualDay}" name="eat-dinner-day-${actualDay}" value="eat-dinner-day-${actualDay}">
-        <label for="eat-dinner-day-${actualDay}">Have Dinner</label><br>
-        <input type="checkbox" id="dinner-leisure-time-day-${actualDay}" name="dinner-leisure-time-day-${actualDay}" value="dinner-leisure-time-day-${actualDay}">
-        <label for="dinner-leisure-time-day-${actualDay}">Leisure Time</label><br>
-        <input type="checkbox" id="dinner-included-activity-day-${actualDay}" name="dinner-included-activity-day-${actualDay}" value="dinner-included-activity-day-${actualDay}">
-        <label for="dinner-included-activity-day-${actualDay}">Included Activity</label><br>
-        <input type="checkbox" id="dinner-optional-activity-day-${actualDay}" name="dinner-optional-activity-day-${actualDay}" value="dinner-optional-activity-day-${actualDay}">
-        <label for="dinner-optional-activity-day-${actualDay}">Optional Activity</label><br>
-      </div>
-      <div class="evening">
-        <p>Evening Activities</p>
-        <input type="checkbox" id="evening-leisure-time-day-${actualDay}" name="evening-leisure-time-day-${actualDay}" value="evening-leisure-time-day-${actualDay}">
-        <label for="evening-leisure-time-day-${actualDay}">Leisure Time</label><br>
-        <input type="checkbox" id="evening-included-activity-day-${actualDay}" name="evening-included-activity-day-${actualDay}" value="evening-included-activity-day-${actualDay}">
-        <label for="evening-included-activity-day-${actualDay}">Included Activity</label><br>
-        <input type="checkbox" id="evening-optional-activity-day-${actualDay}" name="evening-optional-activity-day-${actualDay}" value="evening-optional-activity-day-${actualDay}">
-        <label for="evening-optional-activity-day-${actualDay}">Optional Activity</label><br>
-      </div>
-    </div>
+    <button class="tour-add-activity-button btn-success" id="tour-add-activity-to-day-${actualDay}"><i class="fa fa-plus-circle"></i> Add An Activity</button>
 </div>
 `;
 }

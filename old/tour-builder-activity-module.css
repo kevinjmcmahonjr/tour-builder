@@ -1,0 +1,47 @@
+input:read-only{
+  border: 2px solid black;
+  background: lightgrey;
+  color: black;
+  cursor: not-allowed;
+}
+input:read-only:focus{
+  outline: none;
+}
+
+.activities p{
+  font-weight: bold;
+}
+
+.tour-itinerary input[type="checkbox"][readonly],
+.tour-itinerary input[type="checkbox"][readonly] + label{
+  pointer-events: none;
+  color: lightgray;
+}
+
+.activities{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: left;
+}
+
+.activities > button{
+    flex: 0 0 100%;
+}
+
+.tour-builder-itinerary-activity{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: start;
+    border: 1px solid black;
+    padding: 15px;
+    margin: 15px 0;
+    border-radius: var(--border-radius);
+    flex: 0 0 98%;
+}
+
+.tour-builder-itinerary-activity > div{
+    display: flex;
+    flex-direction: column;
+    padding: 0 15px;
+    border-right: 1px solid black;
+}
