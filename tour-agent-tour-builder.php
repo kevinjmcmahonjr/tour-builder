@@ -2,8 +2,8 @@
 /*
 Plugin Name: Tour Agent Tour Builder
 Plugin URI:
-Description:
-Version: 1.0
+Description: Wherever Tours - Tour Builder WordPress Plugin to allow team members and tour agents to create their own tours
+Version: 0.8 Beta
 Author: Kevin J. McMahon Jr.
 Author URI:
 License:GPLv2
