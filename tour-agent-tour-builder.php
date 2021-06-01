@@ -121,7 +121,7 @@ function initialize_tour_builder(){
         return;
     }
     $user = wp_get_current_user();
-    $roles = array( 'administrator', 'site-manager', 'tour_agent' );
+    $roles = array( 'administrator', 'site_manager', 'tour_agent' );
     if ( is_user_logged_in() && ! array_intersect( $roles, $user->roles)  ){
         echo "You're not authorized to access this page. If you believe this is an error, please contact Wherever Tours technical support.";
         print_r($user->roles);
