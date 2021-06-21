@@ -4,7 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 ?>
 
-<h1 class="page-heading">Tour Builder<br><small> Beta Version: 0.8</small></h1>
+<h1 class="page-heading">Tour Builder<br><small> <?php if ( defined('TOUR_BUILDER_VERSION') ) { echo 'Version: ' . TOUR_BUILDER_VERSION; } ?></small></h1>
 <div class="loader"></div>
   <main class="tb-main">
     <section class="general-information">
@@ -35,13 +35,13 @@ if ( ! defined( 'ABSPATH' ) ) {
         <p>Please select the start and end dates by clicking on the calendar to set a date range.</p>
         <div class="calendar-field"></div>
         <div class="departure-date-field">
-          <p><i class="fas fa-plane-departure"></i> Departure Date: <span class="departure-date-display"></span></p>
+          <p><i class="fas fa-plane-departure"></i> USA Departure Date: <span class="departure-date-display"></span></p>
         </div>
         <div class="start-date-field">
-          <p><i class="fas fa-plane-arrival"></i> Start Date: <span class="starting-date-display"></span></p>
+          <p><i class="fas fa-plane-arrival"></i> Tour Start Date: <span class="starting-date-display"></span></p>
         </div>
         <div class="end-date-field">
-          <p><i class="fas fa-plane-departure"></i> End Date: <span class="ending-date-display"></span></p>
+          <p><i class="fas fa-plane-departure"></i> Tour End Date: <span class="ending-date-display"></span></p>
         </div>
         <div class="days-nights-field">
           <p><span class="total-days"></span> <i class="fas fa-cloud-sun"></i> Days / <span class="total-overnights"></span> <i class="fas fa-cloud-moon"></i> Nights</p>
@@ -62,14 +62,7 @@ if ( ! defined( 'ABSPATH' ) ) {
           </tr>
         </thead>
         <tbody class="overview-table-body">
-          <!-- This needs to be updated with a Javastript literal template -->
-          <tr class="overview-day-row">
-            <td class="overview-day-column overview-day-number"></td>
-            <td class="overview-day-column overview-date"></td>
-            <td class="overview-day-column overview-overnight-city"><input type="text" placeholder="Enter City"></td>
-            <td class="overview-day-column overview-overnight-hotel"><input type="text" placeholder="Enter Hotel"></td>
-            <td class="overview-day-column overview-copy"><button><i class="far fa-copy"></i></button>
-          </tr>
+          <!-- Table Rows Added By Javastript -->
         </tbody>
       </table>
       <!--<button id="lock-overview" type="button">Lock Overview</button>-->

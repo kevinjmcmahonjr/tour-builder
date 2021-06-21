@@ -1,6 +1,5 @@
 /*
     Wherever Tours - Tour Builder
-    Version: 0.1 - Beta
     Author: Kevin J. McMahon Jr.
 */
 
@@ -69,12 +68,12 @@ let guiElements ={
     tourTitle: document.querySelector('#tour-title'),
     tourAgent: document.querySelector('#tour-agent'),
     tourId: document.querySelector('#tour-id'),
-    calendar: jQuery(".calendar-field")[0],
-    departureDate: jQuery('.departure-date-display'),
-    startDate: jQuery('.starting-date-display'),
-    endDate: jQuery('.ending-date-display'),
-    numberOfDays: jQuery(".total-days")[0],
-    numberOfNights: jQuery(".total-overnights")[0],
+    calendar: document.querySelector('.general-information .calendar-field'),
+    departureDate: document.querySelector('.general-information .departure-date-display'),
+    startDate: document.querySelector('.general-information .starting-date-display'),
+    endDate: document.querySelector('.general-informaion .ending-date-display'),
+    numberOfDays: document.querySelector('general-information .total-days'),
+    numberOfNights: document.querySelector('.general-information .total-overnights'),
     tourOverview: {
         container: document.querySelector('.tour-overview'),
         tableBody: jQuery('.overview-table-body')[0],
@@ -142,7 +141,7 @@ document.querySelector('#create-itinerary').addEventListener("click", function()
             tourData.itinerary[days].overnightCity = overnightCity;
             tourData.itinerary[days].overnightHotel = overnightHotel;
         }
-        if (stateCheck.itinerary.initialized === false){
+        if ( stateCheck.itinerary.initialized === false ){ 
             initializeItinerary();
         }
         toggleOverviewInputs();
@@ -291,10 +290,48 @@ function calculateDaysOvernights(){
 // Sets the number of rows equal to the number of days
 // Show Tour Overview table
 /* Needs to also calculate the weekday and date of each day */
-function initializeOverview(overviewDayRows, overviewTableBody){
-    const initalRow = guiElements.tourOverview.tableRows[0];
-    for(days = 1; days < tourData.numberOfDays; days++) {
-        jQuery(initalRow).clone().appendTo(guiElements.tourOverview.tableBody);
+function initializeOverview(){
+    //const initalRow = guiElements.tourOverview.tableRows[0];
+    const tableBody = guiElements.tourOverview.tableBody;
+    const tourDays = tourData.numberOfDays;
+    const rowLiteralInitial = `
+    <tr class="overview-day-row">
+        <td class="overview-day-column overview-day-number"></td>
+        <td class="overview-day-column overview-date"></td>
+        <td class="overview-day-column overview-overnight-city"><input type="text" placeholder="Enter City"></td>
+        <td class="overview-day-column overview-overnight-hotel"><input type="text" placeholder="Enter Hotel"></td>
+        <td class="overview-day-column overview-copy"></td>
+    </tr>
+    `;
+    const rowLiteralCopy = `
+    <tr class="overview-day-row">
+        <td class="overview-day-column overview-day-number"></td>
+        <td class="overview-day-column overview-date"></td>
+        <td class="overview-day-column overview-overnight-city"><input type="text" placeholder="Enter City"></td>
+        <td class="overview-day-column overview-overnight-hotel"><input type="text" placeholder="Enter Hotel"></td>
+        <td class="overview-day-column overview-copy"><button><i class="far fa-copy"></i></button></td>
+    </tr>
+    `;
+    const lastRowLiteral = `
+    <tr class="overview-day-row">
+        <td class="overview-day-column overview-day-number"></td>
+        <td class="overview-day-column overview-date"></td>
+        <td class="overview-day-column overview-overnight-city"><input type="text" value="End of Tour - Return Home" readonly></td>
+        <td class="overview-day-column overview-overnight-hotel"><input type="text" value="End of Tour - Return Home" readonly></td>
+        <td class="overview-day-column overview-copy"></td>
+    </tr>
+    `;
+    for(days = 1; days < tourDays; days++) {
+        if (days === 1){
+            tableBody.insertAdjacentHTML('beforeend', rowLiteralInitial);
+        }
+        if (days === tourDays - 1){
+            tableBody.insertAdjacentHTML('beforeend', lastRowLiteral);
+        }
+        else {
+            tableBody.insertAdjacentHTML('beforeend', rowLiteralCopy);
+        }
+        //jQuery(initalRow).clone().appendTo(guiElements.tourOverview.tableBody);
     }
     guiElements.tourOverview.update();
     setDaysInOverview();
@@ -372,9 +409,13 @@ function calculateOverview(){
     var overviewDayRows = guiElements.tourOverview.tableRows;
     var overviewTableBody = guiElements.tourOverview.tableBody;
     
-    if (stateCheck.overview.calculated === false){
+    if ( stateCheck.overview.calculated === false ){
         initializeOverview(overviewDayRows, overviewTableBody);
         stateCheck.overview.calculated = true;
+    }
+
+    if (stateCheck.overview.calculated === true){
+        //updateOverview();
     }
     var currentDate = new Date(tourData.startDate);
     var endDate = new Date(tourData.endDate);
@@ -397,6 +438,16 @@ function setDepartureDate(){
     visualDepartureDate.classList.add('departure-date');
 }
 
+// Save Date Information to tourData
+function setTourDates(dateRange){
+    tourData.dateRange = dateRange;
+    tourData.startDate = dateRange[0];
+    tourData.endDate = dateRange[1];
+    setDepartureDate();
+    setVisualDates();
+}
+
+
 // Set up calendar GUI
 // Have calendar update fields
 function setupDatePicker(){
@@ -409,12 +460,8 @@ function setupDatePicker(){
         onChange: function(dateRange){
             if (dateRange.length == 2){
                 showTabs();
-                tourData.dateRange = dateRange;
-                tourData.startDate = dateRange[0];
-                tourData.endDate = dateRange[1];
-                setDepartureDate();
+                setTourDates(dateRange);
                 setTourTitle();
-                setVisualDates();
                 calculateDaysOvernights();
                 setDaysOfItinieray();
                 calculateOverview();
