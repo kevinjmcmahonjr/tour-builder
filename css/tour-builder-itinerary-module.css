@@ -167,6 +167,9 @@ main > section > h3{
 .departure-date-field{
   background: khaki;
 }
+.date-selections > div.departure-date-field{
+  font-weight: normal;
+}
 .start-date-field{
   background: limegreen;
 }
