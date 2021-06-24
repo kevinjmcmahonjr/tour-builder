@@ -19,12 +19,20 @@ function createSummary(){
         <ol id="summary-itinerary">
     `;
 
+    tourSummaryItinerary = '';
     for(let itineraryDay = 0; itineraryDay < tourData.itinerary.length; itineraryDay++){
-        tourSummaryItinerary += `
-        <li>
-            <p><b>Date: ${flatpickr.formatDate(tourData.itinerary[itineraryDay].date, "l - j F, Y")} | City: ${tourData.itinerary[itineraryDay].overnightCity} | Hotel: ${tourData.itinerary[itineraryDay].overnightHotel}</b></p>
-            <ul class="activites">`;
-        
+        if (itineraryDay === tourData.itinerary.length -1){
+            tourSummaryItinerary += `
+            <li>
+                <p><b>Date: ${flatpickr.formatDate(tourData.itinerary[itineraryDay].date, "l - j F, Y")} | End of Tour - Return Home</b></p>
+                <ul class="activites">`;
+        } else {
+            tourSummaryItinerary += `
+            <li>
+                <p><b>Date: ${flatpickr.formatDate(tourData.itinerary[itineraryDay].date, "l - j F, Y")} | City: ${tourData.itinerary[itineraryDay].overnightCity} | Hotel: ${tourData.itinerary[itineraryDay].overnightHotel}</b></p>
+                <ul class="activites">`;
+        }
+
         for(let activities = 0; activities < tourData.itinerary[itineraryDay].activities.length; activities++){
             tourSummaryItinerary += `<li>`;
             let activityData = tourData.itinerary[itineraryDay].activities[activities];

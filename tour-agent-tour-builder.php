@@ -3,7 +3,7 @@
 Plugin Name: Tour Agent Tour Builder
 Plugin URI:
 Description:
-Version: 0.8.3
+Version: 0.8.4
 Author: Kevin J. McMahon Jr.
 Author URI:
 License:GPLv2
