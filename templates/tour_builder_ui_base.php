@@ -81,5 +81,5 @@ if ( ! defined( 'ABSPATH' ) ) {
       </form> -->
     </section>
     <section class="tour-save-result">
-</section>
+    </section>
 </main>

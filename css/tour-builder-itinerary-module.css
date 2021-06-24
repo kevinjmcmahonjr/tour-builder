@@ -481,8 +481,15 @@ main > section.tour-submission{
   opacity: 0;
   height: 0;
 }
-.tour-save-result.complete{
-  display: flex;
+.tour-save-result.success{
+  display: block;
   opacity: 1;
   height: initial;
+  flex-basis: 100%;
+}
+.save-success-message{
+  background: limegreen;
+  padding: 15px;
+  font-size: 1em;
+  font-weight: bold;
 }

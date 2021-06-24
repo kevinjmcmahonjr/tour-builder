@@ -189,9 +189,10 @@ document.querySelector('#save-tour').addEventListener("click", function(){
         .then(response => {
             if (response.success){
                 console.log("success");
-                document.querySelector('.tb-main').insertAdjacentHTML('beforeend', "Success! Your Tour Build has been submitted! Here's your summary below.");
-                document.querySelector('.tb-main').insertAdjacentHTML('beforeend', tourSummary);
+                document.querySelector('.tour-save-result').insertAdjacentHTML('beforeend', '<p class="save-success-message">Success! Your Tour Build has been submitted! Here\'s your summary below.</p>');
+                document.querySelector('.tour-save-result').insertAdjacentHTML('beforeend', tourSummary);
                 document.querySelector('.loader').remove();
+                document.querySelector('.tour-save-result').classList.toggle('success');
             } else {
                 console.log('Error');
             }
