@@ -52,6 +52,9 @@ const dayActivity = {
 // Create Object for checking state of things
 // Keeps live application information separate from tourData object
 const stateCheck = {
+    calendar: {
+        first: true,
+    },
     overview: {
         calculated: false,
     },
@@ -71,8 +74,8 @@ let guiElements ={
     calendar: document.querySelector('.general-information .calendar-field'),
     departureDate: document.querySelector('.general-information .departure-date-display'),
     startDate: document.querySelector('.general-information .starting-date-display'),
-    endDate: document.querySelector('.general-informaion .ending-date-display'),
-    numberOfDays: document.querySelector('general-information .total-days'),
+    endDate: document.querySelector('.general-information .ending-date-display'),
+    numberOfDays: document.querySelector('.general-information .total-days'),
     numberOfNights: document.querySelector('.general-information .total-overnights'),
     tourOverview: {
         container: document.querySelector('.tour-overview'),
@@ -193,36 +196,7 @@ document.querySelector('#save-tour').addEventListener("click", function(){
                 console.log('Error');
             }
         });
-
-
-    // fetch(WP_Variables.ajax_url, {
-    //     method: 'POST',
-    //     credentials: 'same-origin',
-    //     body: tourDataSubmit
-    // })
-    // .then((response) => response.json())
-    // .then((data) => {
-    //     document.querySelector('.tb-main').insertAdjacentHTML('beforeend', "Success! Your Tour Build has been submitted! Here's your summary below.");
-    //     document.querySelector('.tb-main').insertAdjacentHTML('beforeend', tourSummary);
-    //     document.querySelector('.loader').remove();
-    // })
-    // .catch((error) => {
-    //     console.log(error);
-    // })
-
-    // let itineraryMarkUp = document.querySelectorAll('#tour-itinerary-tabs-content .tour-itinerary-tab');
-    // itineraryMarkUp.forEach(function(dayDiv, i){
-    //     let inputField = dayDiv.querySelectorAll('input');
-    //     console.log(i);
-    //     let checkedFields = [];
-    //     inputField.forEach(function(inputField, ii){
-    //         inputField.readOnly = true;
-    //         if (inputField.checked){console.log(i);
-
-    //         }
-    //     })
-    // });
-})
+});
 
 // Initialize Tour Builder Application
 // Description: Hides the loader and show the Tour Builder
@@ -269,22 +243,34 @@ function setVisualDates(){
 // Calculates the number of days and nights
 // Based on the Start and End Dates
 // Updates the global tourData
-function calculateDaysOvernights(){
-    if (tourData.startDate != "" && tourData.endDate != ""){
-        var startDate = tourData.startDate; //flatpickr.formatDate(tourData.startDate, "m/d/Y");
-        var endDate = tourData.endDate; //flatpickr.formatDate(tourData.endDate, "m/d/Y");
-        var fullStartDate = new Date(startDate).getTime();
-        var fullEndDate = new Date(endDate).getTime();
+function calculateDaysOvernights(dateRange){
+    let startDate = dateRange[0];
+    let endDate = dateRange[1];
+    //if (tourData.startDate != "" && tourData.endDate != ""){
+        //var startDate = tourData.startDate; //flatpickr.formatDate(tourData.startDate, "m/d/Y");
+        //var endDate = tourData.endDate; //flatpickr.formatDate(tourData.endDate, "m/d/Y");
+        let fullStartDate = new Date(startDate).getTime();
+        let fullEndDate = new Date(endDate).getTime();
         fullStartDate = eval( fullStartDate / 1000 + 3600 );
         fullEndDate = eval( fullEndDate / 1000 + 3600 );
-        var numberOfNights = eval( fullEndDate - fullStartDate );
+        let numberOfNights = eval( fullEndDate - fullStartDate );
         numberOfNights = Math.round(eval( numberOfNights / 86400 ));
-        var numberOfDays = eval( numberOfNights + 1 );
-        tourData.numberOfDays = numberOfDays;
-        tourData.numberOfNights = numberOfNights;
-        jQuery(guiElements.numberOfDays).text(numberOfDays);
-        jQuery(guiElements.numberOfNights).text(numberOfNights);
-    }
+        let numberOfDays = eval( numberOfNights + 1 );
+        //tourData.numberOfDays = numberOfDays;
+        //tourData.numberOfNights = numberOfNights;
+        //jQuery(guiElements.numberOfDays).text(numberOfDays);
+        //jQuery(guiElements.numberOfNights).text(numberOfNights);
+    //}
+    return {days: numberOfDays, nights: numberOfNights};
+}
+
+function setDaysOvernights(daysOvernights){
+    let numberOfDays = daysOvernights.days;
+    let numberOfNights = daysOvernights.nights;
+    tourData.numberOfDays = numberOfDays;
+    tourData.numberOfNights = numberOfNights;
+    jQuery(guiElements.numberOfDays).text(numberOfDays);
+    jQuery(guiElements.numberOfNights).text(numberOfNights);
 }
 
 // Sets the number of rows equal to the number of days
@@ -339,6 +325,13 @@ function initializeOverview(){
     jQuery(guiElements.tourOverview.container).addClass("initiated");
 }
 
+function updateOverview(){
+    console.log("update overview called");
+    let tableBody = guiElements.tourOverview.tableBody;
+    tableBody.innerHTML = '';
+    initializeOverview();
+}
+
 function copyOverviewDay(){
     let copyButtons = document.querySelectorAll('.overview-copy');
     copyButtons.forEach( function(button) {
@@ -389,6 +382,10 @@ function setDaysOfItinieray(){
     //console.log(tourData.itinerary);
 }
 
+function resetDaysOfItinierary(){
+    tourData.itinerary.length = 0;
+}
+
 function setDaysInOverview(){
     const overviewDayRow = guiElements.tourOverview.tableRows;
     if (overviewDayRow.length === tourData.numberOfDays){
@@ -412,13 +409,13 @@ function calculateOverview(){
     if ( stateCheck.overview.calculated === false ){
         initializeOverview(overviewDayRows, overviewTableBody);
         stateCheck.overview.calculated = true;
+        return;
     }
 
     if (stateCheck.overview.calculated === true){
-        //updateOverview();
+        updateOverview();
+        return;
     }
-    var currentDate = new Date(tourData.startDate);
-    var endDate = new Date(tourData.endDate);
 }
 
 function setTourTitle(){
@@ -447,6 +444,76 @@ function setTourDates(dateRange){
     setVisualDates();
 }
 
+function toggleCalendarLock(specifyLockState){
+    let calendar = document.querySelector('.flatpickr-calendar');
+    let innerCalendar = calendar.querySelector('.flatpickr-innerContainer');
+    if (stateCheck.calendar.first){
+        addCalendarLockElement(innerCalendar);
+        stateCheck.calendar.first = false;
+    }
+    if (specifyLockState === "lock"){
+        calendar.classList.add('locked');
+    } else if (specifyLockState === "unlock"){
+        calendar.classList.remove('locked');
+    } else {
+        calendar.classList.toggle('locked');
+    }
+}
+
+function addCalendarLockElement(calendar){
+    calendar.insertAdjacentHTML('beforeend', '<div class="calendar-lock"><span class="calendar-lock-icon"></span></div>');
+    let calendarLock = calendar.querySelector('.calendar-lock');
+    calendarLock.addEventListener('click', toggleCalendarLock);
+}
+
+function compareNumberOfDays(calculatedDays){
+    let setDays = tourData.numberOfDays;
+    if (calculatedDays === setDays){
+        return "equal";
+    }
+    if (calculatedDays > setDays){
+        return "greater";
+    }
+    if (calculatedDays < setDays){
+        return "less";
+    }
+}
+
+function calendarChangeHandler(dateRange, calendar){
+    //let calendar = flatpickr(guiElements.calendar);
+    if (stateCheck.calendar.first){
+        showTabs();
+        setTourDates(dateRange);
+        toggleCalendarLock();
+        setTourTitle();
+        let daysOvernights = calculateDaysOvernights(dateRange);
+        setDaysOvernights(daysOvernights);
+        setDaysOfItinieray();
+        calculateOverview();
+    } else {
+        showTabs();
+        setTourTitle();
+        toggleCalendarLock();
+        let daysOvernights = calculateDaysOvernights(dateRange);
+        let comparedDays = compareNumberOfDays(daysOvernights.days);
+        switch (comparedDays){
+            case "equal":
+                setTourDates(dateRange);
+                resetDaysOfItinierary();
+                setDaysOfItinieray();
+                calculateOverview();
+                break;
+            case "greater":
+                alert("Please Select a Date Range Equal To Original");
+                calendar.setDate(tourData.dateRange);
+                break;
+            case "less":
+                alert("Please Select a Date Range Equal To Original");
+                calendar.setDate(tourData.dateRange);
+                break;
+        }
+    }
+}
 
 // Set up calendar GUI
 // Have calendar update fields
@@ -456,16 +523,12 @@ function setupDatePicker(){
         altFormat: "F j, Y",
         dateFormat: "m-d-Y",
         inline: true,
+        monthSelectorType: "dropdown",
         mode: "range",
         onChange: function(dateRange){
+            let calendar = this;
             if (dateRange.length == 2){
-                showTabs();
-                setTourDates(dateRange);
-                setTourTitle();
-                calculateDaysOvernights();
-                setDaysOfItinieray();
-                calculateOverview();
-                document.querySelector('.flatpickr-calendar').classList.add('disabled');
+                calendarChangeHandler(dateRange, calendar);
             }
         }
     });

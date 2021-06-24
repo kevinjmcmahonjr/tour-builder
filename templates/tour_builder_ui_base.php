@@ -18,18 +18,12 @@ if ( ! defined( 'ABSPATH' ) ) {
           <label for="tour-id">Tour ID</label>
           <input type="text" id="tour-id" name="tour-id" value="<?php echo 'TA-' . $user->ID . '-' . date("ymdH") . '-' . rand(11, 99) ?>" readonly>
         </div>
-        <!-- <p><span class="bold">Tour Agent: </span><?php /*echo $user->display_name */ ?></p>
-        <p><span class="bold">Tour ID: </span> <?php /*echo 'TA-' . $user->ID . '-' . get_the_ID() */ ?></p> -->
         <div class="tour-title-input">
           <label for="tour-title">Tour Title</label>
           <input type="text" id="tour-title" name="tour-title">
           <p>Please enter a Tour Title above to give your tour a name.</p>
         </div>
       </div>
-      <!--<label for="tour-name">Tour Name</label>
-      <input type="text" id="tour-name" name="tour-name"><br>
-      <label for="Tour Agent">Tour Agent</label>
-      <input type="text" id="tour-agent" name="tour-agent"><br>-->
       <h3>Date Selection</h3>
       <div class="date-selections">
         <p>Please select the start and end dates by clicking on the calendar to set a date range.</p>

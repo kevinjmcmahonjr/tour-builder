@@ -201,10 +201,36 @@ div.calendar-field.flatpickr-input.form-control[readonly].input{
   background-color: red;
   border-color: red
 }
-.flatpickr-calendar.disabled{
-  pointer-events: none;
+.flatpickr-calendar.locked{
+  pointer-events: inherit;
   background: lightgray;
   cursor: not-allowed;
+}
+.flatpickr-calendar.locked .flatpickr-day,
+.flatpickr-calendar.locked .flatpickr-months{
+  pointer-events: none;
+}
+
+.flatpickr-calendar.locked .flatpickr-innerContainer .calendar-lock,
+.flatpickr-calendar .flatpickr-innerContainer .calendar-lock{
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  margin: 10px;
+}
+
+.flatpickr-calendar.locked .flatpickr-innerContainer .calendar-lock .calendar-lock-icon::before{
+  content: '\f023';
+  font-family: "Font Awesome 5 Free";
+  font-size: 1.5em;
+  cursor: pointer;
+}
+
+.flatpickr-calendar .flatpickr-innerContainer .calendar-lock .calendar-lock-icon::before{
+  content: '\f09c';
+  font-family: "Font Awesome 5 Free";
+  font-size: 1.5em;
+  cursor: pointer;
 }
 
 input:read-only{
