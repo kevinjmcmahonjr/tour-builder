@@ -303,8 +303,7 @@ function initializeOverview(){
     <tr class="overview-day-row">
         <td class="overview-day-column overview-day-number"></td>
         <td class="overview-day-column overview-date"></td>
-        <td class="overview-day-column overview-overnight-city"><input type="text" value="End of Tour - Return Home" readonly></td>
-        <td class="overview-day-column overview-overnight-hotel"><input type="text" value="End of Tour - Return Home" readonly></td>
+        <td class="overview-day-column overview-day-last" colspan="2">End of Tour - Return Home</td>
         <td class="overview-day-column overview-copy"></td>
     </tr>
     `;
