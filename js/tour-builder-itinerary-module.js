@@ -4,7 +4,7 @@
 */
 
 // Create Object to hold Tour Information
-const tourData = {
+let tourData = {
     tourTitle: "",
     tourID: "",
     tourAgent:"",
@@ -153,14 +153,25 @@ document.querySelector('#create-itinerary').addEventListener("click", function()
     }
 });
 
-document.querySelector('#save-tour').addEventListener("click", function(){
+let saveButtons = document.querySelectorAll('.save-tour-buttons');
+saveButtons.forEach( function(button){
+    button.addEventListener("click", saveTourBuild);
+});
+function saveTourBuild(){
+
     if (tourData.tourTitle === "" || tourData.tourTitle === undefined || tourData.tourTitle === null){
         tourData.tourTitle = guiElements.tourTitle.value;
         if (tourData.tourTitle === "" || tourData.tourTitle === undefined || tourData.tourTitle === null){
-        alert("Please Enter Tour Title");
-        return;
+            alert("You must enter a Tour Title to save or submit your tour build.");
+            return;
         }
     }
+
+    if (this.id === 'save-tour-submit'){
+        let answer = confirm("By submitting the tour, it will be locked until a Wherever Tour representative reviews it. Are you sure you're ready to submit?");
+        if (answer == false) return;
+    }
+    
     let tourSummary = createSummary();
     toggleAllModules();
 
@@ -177,6 +188,7 @@ document.querySelector('#save-tour').addEventListener("click", function(){
     tourDataSubmit.append( 'tour_id', tourData.tourId);
     tourDataSubmit.append( 'tour_data', JSON.stringify(tourData));
     tourDataSubmit.append( 'tour_summary', tourSummary);
+    tourDataSubmit.append( 'save_type', 'draft');
     
     fetch(WP_Variables.ajax_url, {
         method: 'POST',
@@ -197,14 +209,22 @@ document.querySelector('#save-tour').addEventListener("click", function(){
                 console.log('Error');
             }
         });
-});
+}
 
 // Initialize Tour Builder Application
 // Description: Hides the loader and show the Tour Builder
 function initializeBuilder() {
-    showTabs();
-    setupDatePicker();
-    hideLoaderShowBuilder();
+    if (WP_Variables.tour_data === null){
+        showTabs();
+        setupDatePicker();
+        hideLoaderShowBuilder();
+    } else {
+        tourData = JSON.parse(WP_Variables.tour_data);
+        showTabs();
+        loadDatePicker();
+        toggleCalendarLock();
+        hideLoaderShowBuilder();
+    }
 }
 
 // Helper function to calculate next day
@@ -526,6 +546,25 @@ function setupDatePicker(){
         inline: true,
         monthSelectorType: "dropdown",
         mode: "range",
+        onChange: function(dateRange){
+            let calendar = this;
+            if (dateRange.length == 2){
+                calendarChangeHandler(dateRange, calendar);
+            }
+        }
+    });
+}
+
+function loadDatePicker(){
+    guiElements.calendar.flatpickr({
+        altInput: true,
+        altFormat: "F j, Y",
+        dateFormat: "m-d-Y",
+        inline: true,
+        monthSelectorType: "dropdown",
+        mode: "range",
+        //defaultDate: [new Date(tourData.startDate), new Date(tourData.endDate)]
+        defaultDate: tourData.dateRange,
         onChange: function(dateRange){
             let calendar = this;
             if (dateRange.length == 2){

@@ -11,6 +11,9 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ){
     die;
 }
 
+
+delete_option('wt_tour_agent_roles_created');
+
 // Clear database stored data
 //Commented out to prevent unintentional data deletion
 
