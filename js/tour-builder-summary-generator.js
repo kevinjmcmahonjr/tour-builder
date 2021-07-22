@@ -10,9 +10,9 @@ function createSummary(){
         <p>Tour Agent: ${tourData.tourAgent}<br>Tour ID: ${tourData.tourId}</p>
         <h3>Overview</h3>
         <p>
-            USA Departure Date: ${flatpickr.formatDate(tourData.departureDate, "l - j F, Y")}<br>
-            Tour Start Date: ${flatpickr.formatDate(tourData.startDate, "l - j F, Y")}<br>
-            Tour End Date: ${flatpickr.formatDate(tourData.endDate, "l - j F, Y")}<br>
+            USA Departure Date: ${formatDisplayDate(tourData.departureDate)}<br>
+            Tour Start Date: ${formatDisplayDate(tourData.startDate)}<br>
+            Tour End Date: ${formatDisplayDate(tourData.endDate)}<br>
             Duration: ${tourData.numberOfDays} Days / ${tourData.numberOfNights} Nights
         </p>
         <h3>Itinerary</h3>
@@ -24,12 +24,12 @@ function createSummary(){
         if (itineraryDay === tourData.itinerary.length -1){
             tourSummaryItinerary += `
             <li>
-                <p><b>Date: ${flatpickr.formatDate(tourData.itinerary[itineraryDay].date, "l - j F, Y")} | End of Tour - Return Home</b></p>
+                <p><b>Date: ${formatDisplayDate(tourData.itinerary[itineraryDay].date)} | End of Tour - Return Home</b></p>
                 <ul class="activites">`;
         } else {
             tourSummaryItinerary += `
             <li>
-                <p><b>Date: ${flatpickr.formatDate(tourData.itinerary[itineraryDay].date, "l - j F, Y")} | City: ${tourData.itinerary[itineraryDay].overnightCity} | Hotel: ${tourData.itinerary[itineraryDay].overnightHotel}</b></p>
+                <p><b>Date: ${formatDisplayDate(tourData.itinerary[itineraryDay].date)} | City: ${tourData.itinerary[itineraryDay].overnightCity} | Hotel: ${tourData.itinerary[itineraryDay].overnightHotel}</b></p>
                 <ul class="activites">`;
         }
 

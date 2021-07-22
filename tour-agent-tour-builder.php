@@ -213,6 +213,7 @@ function process_save_tour(){
     $tour_summary = wp_kses_post( $_POST['tour_summary'] );
     $tour_data = json_encode( $_POST['tour_data'] );
     $tour_save_type = sanitize_text_field( $_POST['save_type']);
+    $post_id = sanitize_text_field( $_POST['post_id'] );
 
     if ($tour_save_type === 'draft'){
         $tour_builder_post = array(
@@ -226,6 +227,7 @@ function process_save_tour(){
                 'tour_builder_tour_json' => $tour_data
             )
         );
+        wp_insert_post( $tour_builder_post );
     } else if ($tour_save_type === 'submit'){
         $tour_builder_post = array(
             'post_type'     => 'tour_builds',
@@ -238,9 +240,23 @@ function process_save_tour(){
                 'tour_builder_tour_json' => $tour_data
             )
         );
+        wp_insert_post( $tour_builder_post );
+    } else if ($tour_save_type === 'update'){
+        $tour_builder_post = array(
+            'post_type'     => 'tour_builds',
+            'post_status'   => 'publish',
+            'post_title'    => $tour_id,
+            'post_content'  => $tour_summary,
+            'meta_input'    => array(
+                'tour_builder_tour_title'  => $tour_title,
+                'tour_builder_tour_id' => $tour_id,
+                'tour_builder_tour_json' => $tour_data
+            )
+        );
+        wp_update_post( $post_id, $tour_builder_post );
     }
 
-    wp_insert_post( $tour_builder_post );
+    //wp_insert_post( $tour_builder_post );
     wp_send_json_success( $current_nonce );
 
     wp_die();
@@ -275,6 +291,7 @@ function tour_builder_enqueue() {
             'ajax_url' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('tour-builder-nonce'),
             'is_user_logged_in' => is_user_logged_in(),
+            'post_id'   => $post->ID,
             'post_type' => get_post_type( $post->ID ),
             'tour_data' => json_decode($tour_data)
         ];
@@ -306,15 +323,27 @@ function initialize_tour_builder(){
         //echo get_userdata($current_user->ID);
         return "You're not authorized to access this page. If you believe this is an error, please contact Wherever Tours technical support.";
     }
+
     global $post;
+    $tour_agent = $user->display_name;
+    $tour_id = '';
+    $tour_title = '';
+    $tour_open;
 
-    $tour_agent = $user;
-
-    if ( ! $post->post_author === $user->ID){
-        $tour_agent = $post->post_author;
+    if ($post->post_type === 'tour_builds'){
+        $tour_id = $post->post_title;
+        $tour_title = get_post_meta($post->ID, 'tour_builder_tour_title')[0];
+        $tour_open = true;
+    } else {
+        $tour_id = 'TA-' . $user->ID . '-' . date("ymdH") . '-' . rand(11, 99);
+        $tour_open = false;
     }
 
-    var_dump($post);
+    // if ( ! $post->post_author === $user->ID){
+    //     $tour_agent = $post->post_author;
+    // }
+
+    //var_dump($post);
     $template = plugin_dir_path( __FILE__ ) . 'templates/tour_builder_ui_base.php';
     require $template;
 }

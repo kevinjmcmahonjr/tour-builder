@@ -12,15 +12,15 @@ if ( ! defined( 'ABSPATH' ) ) {
       <div class="general-information-inputs">
         <div class="tour-agent-input">  
           <label for="tour-agent">Tour Agent</label>
-          <input type="text" id="tour-agent" name="tour-agent" value="<?php echo $tour_agent->display_name ?>" readonly>
+          <input type="text" id="tour-agent" name="tour-agent" value="<?php echo $tour_agent ?>" readonly>
         </div>
         <div class="tour-id-input">
           <label for="tour-id">Tour ID</label>
-          <input type="text" id="tour-id" name="tour-id" value="<?php echo 'TA-' . $tour_agent->ID . '-' . date("ymdH") . '-' . rand(11, 99) ?>" readonly>
+          <input type="text" id="tour-id" name="tour-id" value="<?php echo $tour_id ?>" readonly>
         </div>
         <div class="tour-title-input">
           <label for="tour-title">Tour Title</label>
-          <input type="text" id="tour-title" name="tour-title">
+          <input type="text" id="tour-title" name="tour-title" value="<?php echo $tour_title ?>">
           <p>Please enter a Tour Title above to give your tour a name.</p>
         </div>
       </div>
@@ -74,7 +74,11 @@ if ( ! defined( 'ABSPATH' ) ) {
       </div>
     </section>
     <section class="tour-submission">
+      <?php if( ! $tour_open){?>
       <button class="save-tour-buttons" id="save-tour-draft" type="button">Save As Draft</button>
+      <?php } else { ?>
+      <button class="save-tour-buttons" id="save-tour-update" type="button">Update & Save Draft</button>
+      <?php } ?>
       <button class="save-tour-buttons" id="save-tour-submit" type="button">Submit For Review</button>
       <!-- form button below, keep commented out for now, take out when saving method using eventlistener decided on -->
       <!-- <form id="save-tour-hidden-form">
