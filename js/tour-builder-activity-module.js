@@ -298,9 +298,9 @@ function activityTemplate(itineraryDay, activityCount, activityId){
         </div>
         <div class="tour-activity-optional">
             <div>
-                <input type="radio" name="activity-included" id="acitivity-optional-included-${activityId}" value="included">
+                <input type="radio" name="activity-included-or-optional" id="acitivity-optional-included-${activityId}" value="included">
                 <label for="acitivity-optional-included-${activityId}">Included</label>
-                <input type="radio" name="activity-optional" id="acitivity-optional-optional-${activityId}" value="optional">
+                <input type="radio" name="activity-included-or-optional" id="acitivity-optional-optional-${activityId}" value="optional">
                 <label for="acitivity-optional-optional-${activityId}">Optional</label>
             </div>
         </div>
