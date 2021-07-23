@@ -54,10 +54,11 @@ const dayActivity = {
 const stateCheck = {
     create: {
         new: null,
-        loadSave: null,
+        loadSave: false,
     },
     calendar: {
         first: true,
+        lockButton: false,
     },
     overview: {
         calculated: false,
@@ -234,6 +235,7 @@ function initializeBuilder() {
         stateCheck.create.new = false;
         stateCheck.create.loadSave = true;
         stateCheck.overview.calculated = true;
+        stateCheck.calendar.first = false;
         showTabs();
         loadDatePicker();
         toggleCalendarLock();
@@ -600,9 +602,10 @@ function loadTourDates(){
 function toggleCalendarLock(specifyLockState){
     let calendar = document.querySelector('.flatpickr-calendar');
     let innerCalendar = calendar.querySelector('.flatpickr-innerContainer');
-    if (stateCheck.calendar.first){
+    if (! stateCheck.calendar.lockElement) { //stateCheck.calendar.first || 
         addCalendarLockElement(innerCalendar);
         stateCheck.calendar.first = false;
+        stateCheck.calendar.lockElement = true;
     }
     if (specifyLockState === "lock"){
         calendar.classList.add('locked');
@@ -613,9 +616,9 @@ function toggleCalendarLock(specifyLockState){
     }
 }
 
-function addCalendarLockElement(calendar){
-    calendar.insertAdjacentHTML('beforeend', '<div class="calendar-lock"><span class="calendar-lock-icon"></span></div>');
-    let calendarLock = calendar.querySelector('.calendar-lock');
+function addCalendarLockElement(container){
+    container.insertAdjacentHTML('beforeend', '<div class="calendar-lock"><span class="calendar-lock-icon"></span></div>');
+    let calendarLock = container.querySelector('.calendar-lock');
     calendarLock.addEventListener('click', toggleCalendarLock);
 }
 
@@ -635,7 +638,9 @@ function compareNumberOfDays(calculatedDays){
 function calendarChangeHandler(dateRange, calendar){
     //let calendar = flatpickr(guiElements.calendar);
     // If this is a new tour build run these functions
-    if (stateCheck.create.new){
+    console.log(stateCheck.calendar.first);
+    if (stateCheck.calendar.first){
+        console.log("First");
         showTabs();
         setTourDates(dateRange);
         toggleCalendarLock();
@@ -645,6 +650,7 @@ function calendarChangeHandler(dateRange, calendar){
         setDaysOfItinieray();
         calculateOverview();
     } else if (stateCheck.create.loadSave){
+        console.log("Second");
         // If this is a saved tour loading in run these functions
         showTabs();
         loadTourDates();
@@ -654,6 +660,7 @@ function calendarChangeHandler(dateRange, calendar){
         stateCheck.create.loadSave = false;
     }
     else {
+        console.log("Third");
         // If this is an update or edit on an open tour run these functions
         showTabs();
         setTourTitle();
@@ -665,6 +672,7 @@ function calendarChangeHandler(dateRange, calendar){
                 setTourDates(dateRange);
                 resetDaysOfItinierary();
                 setDaysOfItinieray();
+                //updateOverview();
                 calculateOverview();
                 break;
             case "greater":
