@@ -148,7 +148,12 @@ function addNewActivity(){
     addedActivity.querySelector('textarea[name="activity-notes"]').addEventListener('change', function(e){
         tourData.itinerary[itineraryKey].activities[activityKey].notes = e.target.value;
     });
-    addedActivity.querySelectorAll('input[name="activity-included-or-optional"]').forEach(item => {
+    // addedActivity.querySelectorAll('input[name="activity-included-or-optional"]').forEach(item => {
+    //     item.addEventListener('change', function(e){
+    //         tourData.itinerary[itineraryKey].activities[activityKey].optional = e.target.value;
+    //     })
+    // });
+    addedActivity.querySelectorAll('.tour-activity-radio-button').forEach(item => {
         item.addEventListener('change', function(e){
             tourData.itinerary[itineraryKey].activities[activityKey].optional = e.target.value;
         })
@@ -300,9 +305,9 @@ function activityTemplate(itineraryDay, activityCount, activityId){
         </div>
         <div class="tour-activity-optional">
             <div>
-                <input type="radio" name="activity-included-or-optional" id="acitivity-optional-included-${activityId}" class="tour-activity-radio-button" value="included">
+                <input type="radio" name="activity-included-or-optional-${activityId}" id="acitivity-optional-included-${activityId}" class="tour-activity-radio-button" value="included">
                 <label for="acitivity-optional-included-${activityId}">Included</label>
-                <input type="radio" name="activity-included-or-optional" id="acitivity-optional-optional-${activityId}" class="tour-activity-radio-button" value="optional">
+                <input type="radio" name="activity-included-or-optional-${activityId}" id="acitivity-optional-optional-${activityId}" class="tour-activity-radio-button" value="optional">
                 <label for="acitivity-optional-optional-${activityId}">Optional</label>
             </div>
         </div>
