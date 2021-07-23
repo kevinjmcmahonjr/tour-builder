@@ -180,6 +180,36 @@ register_activation_hook( __FILE__, array( $tourBuilder, 'activate' ) );
 // Deactivate
 register_deactivation_hook( __FILE__, array( $tourBuilder, 'deactivate' ) );
 
+// Set the Admin Columns for Tour Builds
+function wherever_tours_tour_builds_columns($columns){
+    $columns = array(
+        'cb' => $columns['cb'],
+        'tour_title' => "Tour Title",
+        'title' => "Tour ID",
+        'author' => "Tour Agent",
+        'date' => "Date Created",
+    );
+    return $columns;
+}
+add_filter( 'manage_tour_builds_posts_columns', 'wherever_tours_tour_builds_columns' );
+
+
+add_action( 'manage_tour_builds_posts_custom_column', 'wt_tour_builder_custom_column', 10 , 2);
+function wt_tour_builder_custom_column( $column, $post_id){
+    if ( $column === 'tour_title' ){
+        echo get_post_meta( $post_id, 'tour_builder_tour_title', true);
+    }
+}
+
+// Get Post Meta Data for Tour Builds Admin Columns
+// function wherever_tours_tour_builds_custom_column( $column , $post_id ) {
+//     if ( 'tour_title' === $column ){
+//         $tour_title = get_post_meta( $post_id, 'tour_builder_tour_title', true);
+//         echo $tour_title;
+//     }
+// }
+// add_action( 'manage_tour_builds_posts_custom_column', 'wherever_tours_tour_builds_custom_column');
+
 
 
 function add_tour_build_meta_boxes(){
