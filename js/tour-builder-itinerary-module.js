@@ -224,7 +224,7 @@ function saveTourBuild(){
 // Initialize Tour Builder Application
 // Description: Hides the loader and show the Tour Builder
 function initializeBuilder() {
-    if (WP_Variables.tour_data === null){
+    if (WP_Variables.tour_data === null || WP_Variables.tour_data === ""){
         stateCheck.create.new = true;
         showTabs();
         setupDatePicker();
@@ -233,6 +233,7 @@ function initializeBuilder() {
         tourData = JSON.parse(WP_Variables.tour_data);
         stateCheck.create.new = false;
         stateCheck.create.loadSave = true;
+        stateCheck.overview.calculated = true;
         showTabs();
         loadDatePicker();
         toggleCalendarLock();
@@ -446,10 +447,11 @@ function loadOverview(){
 }
 
 function updateOverview(){
-    console.log("update overview called");
-    let tableBody = guiElements.tourOverview.tableBody;
-    tableBody.innerHTML = '';
-    initializeOverview();
+    let tableRows = guiElements.tourOverview.tableRows;
+    for ( row = 0; row < tableRows.length; row++){
+        tableRows[row].querySelector('.overview-day-number').innerHTML = tourData.itinerary[row].dayNumber;
+        tableRows[row].querySelector('.overview-date').innerHTML = formatOverviewDate(tourData.itinerary[row].date);
+    }
 }
 
 function copyOverviewDay(){

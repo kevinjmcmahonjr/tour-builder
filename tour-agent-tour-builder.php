@@ -6,7 +6,7 @@
 Plugin Name: Tour Agent Tour Builder
 Plugin URI:
 Description:
-Version: 0.8.6
+Version: 0.8.7 Beta
 Author: Kevin J. McMahon Jr.
 Author URI:
 License:GPLv2
@@ -231,7 +231,7 @@ function process_save_tour(){
     } else if ($tour_save_type === 'submit'){
         $tour_builder_post = array(
             'post_type'     => 'tour_builds',
-            'post_status'   => 'publish',
+            'post_status'   => 'pending',
             'post_title'    => $tour_id,
             'post_content'  => $tour_summary,
             'meta_input'    => array(
@@ -243,8 +243,9 @@ function process_save_tour(){
         wp_insert_post( $tour_builder_post );
     } else if ($tour_save_type === 'update'){
         $tour_builder_post = array(
+            'ID'            => $post_id,
             'post_type'     => 'tour_builds',
-            'post_status'   => 'publish',
+            'post_status'   => 'draft',
             'post_title'    => $tour_id,
             'post_content'  => $tour_summary,
             'meta_input'    => array(
@@ -253,7 +254,7 @@ function process_save_tour(){
                 'tour_builder_tour_json' => $tour_data
             )
         );
-        wp_update_post( $post_id, $tour_builder_post );
+        wp_update_post( $tour_builder_post );
     }
 
     //wp_insert_post( $tour_builder_post );
