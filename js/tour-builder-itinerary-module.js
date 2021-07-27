@@ -65,6 +65,10 @@ const stateCheck = {
     },
     itinerary:{
         initialized: false,
+    },
+    post: {
+        id: null,
+        permalink: null,
     }
 }
 
@@ -212,7 +216,11 @@ function saveTourBuild(){
         .then(response => {
             if (response.success){
                 console.log("success");
+                console.log(response);
+                stateCheck.post.id = response.data.post_id;
+                stateCheck.post.permalink = response.data.permalink;
                 document.querySelector('.tour-save-result').insertAdjacentHTML('beforeend', '<p class="save-success-message">Success! Your Tour Build has been submitted! Here\'s your summary below.</p>');
+                document.querySelector('.tour-save-result').insertAdjacentHTML('beforeend', `<div><a class="btn btn-primary" href="${stateCheck.post.permalink}">Edit Saved Tour</a><a class="btn btn-primary" href="/tour-builder/">Build A New Tour</a></div>`);
                 document.querySelector('.tour-save-result').insertAdjacentHTML('beforeend', tourSummary);
                 document.querySelector('.loader').remove();
                 document.querySelector('.tour-save-result').classList.toggle('success');

@@ -120,6 +120,7 @@ class TourBuilder
             'capability_type'     => array('tour_build', 'tour_builds'),
             'map_meta_cap'        => true,
             'supports'            => ['title', 'editor', 'author'],
+            'rewrite'             => ['slug' => 'tour-build'],
             //'taxonomies'          => [],
             // 'rewrite'             => [
             //     // 'slug' => 'tour-builds',
@@ -183,9 +184,9 @@ register_deactivation_hook( __FILE__, array( $tourBuilder, 'deactivate' ) );
 // Set the Admin Columns for Tour Builds
 function wherever_tours_tour_builds_columns($columns){
     $columns = array(
-        'cb' => $columns['cb'],
-        'tour_title' => "Tour Title",
+        //'cb' => $columns['cb'],
         'title' => "Tour ID",
+        'tour_title' => "Tour Title",
         'author' => "Tour Agent",
         'date' => "Date Created",
     );
@@ -212,15 +213,33 @@ function wt_tour_builder_custom_column( $column, $post_id){
 
 
 
-function add_tour_build_meta_boxes(){
+function add_tour_builds_meta_boxes(){
     function tour_id_admin_markup(){
-
+        global $post;
+        $tour_id = get_post_meta( $post->ID, 'tour_builder_tour_title', true);
+        echo $tour_id;
     }
 
-    add_meta_box('tour-id', 'Tour ID', 'tour_id_admin_markup', 'tour-builds', 'normal', 'high', null);
-    add_meta_box('tour-data', 'Tour Data', 'tour_data_admin_markup', 'tour-builds', 'normal', 'high', null);
+    function tour_data_admin_markup(){
+        global $post;
+        $tour_data = get_post_meta( $post->ID, 'tour_builder_tour_json', true);
+        echo $tour_data;
+    }
+
+    add_meta_box('tour-id', 'Tour ID', 'tour_id_admin_markup', 'tour_builds', 'normal', 'high', null);
+    add_meta_box('tour-data', 'Tour Data', 'tour_data_admin_markup', 'tour_builds', 'normal', 'high', null);
 }
-add_action( 'add_meta_boxes', 'add_tour_build_meta_boxes');
+add_action( 'add_meta_boxes', 'add_tour_builds_meta_boxes');
+
+
+function hide_notices_in_tour_builds(){
+    global $post;
+    if( $post && $post->post_type === 'tour_builds'){
+        remove_all_actions('use_admin_notices');
+        remove_all_actions('admin_notices');
+    }
+}
+add_action('in_admin_header', 'hide_notices_in_tour_builds');
 
 
 /* ---------------------------- Ajax To Save Form --------------------------- */
@@ -244,6 +263,7 @@ function process_save_tour(){
     $tour_data = json_encode( $_POST['tour_data'] );
     $tour_save_type = sanitize_text_field( $_POST['save_type']);
     $post_id = sanitize_text_field( $_POST['post_id'] );
+    $saved_post_id = null;
 
     if ($tour_save_type === 'draft'){
         $tour_builder_post = array(
@@ -257,7 +277,7 @@ function process_save_tour(){
                 'tour_builder_tour_json' => $tour_data
             )
         );
-        wp_insert_post( $tour_builder_post );
+        $saved_post_id = wp_insert_post( $tour_builder_post );
     } else if ($tour_save_type === 'submit'){
         $tour_builder_post = array(
             'post_type'     => 'tour_builds',
@@ -270,7 +290,7 @@ function process_save_tour(){
                 'tour_builder_tour_json' => $tour_data
             )
         );
-        wp_insert_post( $tour_builder_post );
+        $saved_post_id = wp_insert_post( $tour_builder_post );
     } else if ($tour_save_type === 'update'){
         $tour_builder_post = array(
             'ID'            => $post_id,
@@ -284,11 +304,18 @@ function process_save_tour(){
                 'tour_builder_tour_json' => $tour_data
             )
         );
-        wp_update_post( $tour_builder_post );
+        $saved_post_id = wp_update_post( $tour_builder_post );
     }
 
+    $post_permalink = get_the_permalink( $saved_post_id );
+
+    $success_data = array(
+        'nonce' => $current_nonce,
+        'post_id' => $saved_post_id,
+        'permalink' => $post_permalink,
+    );
     //wp_insert_post( $tour_builder_post );
-    wp_send_json_success( $current_nonce );
+    wp_send_json_success( $success_data );
 
     wp_die();
 }
