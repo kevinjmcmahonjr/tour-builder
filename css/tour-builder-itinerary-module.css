@@ -493,3 +493,9 @@ main > section.tour-submission{
   font-size: 1em;
   font-weight: bold;
 }
+.save-warning-message{
+  background: yellow;
+  padding: 15px;
+  font-size: 1em;
+  font-weight: bold;
+}

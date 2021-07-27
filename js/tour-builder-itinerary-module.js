@@ -176,12 +176,14 @@ function saveTourBuild(){
         }
     }
 
+    let saveType = 'draft';
+
     if (this.id === 'save-tour-submit'){
+        saveType = 'submit';
         let answer = confirm("By submitting the tour, it will be locked until a Wherever Tour representative reviews it. Are you sure you're ready to submit?");
         if (answer == false) return;
     }
     
-    let saveType = 'draft';
     if (this.id === 'save-tour-update'){
         saveType = 'update';
     }
@@ -219,7 +221,12 @@ function saveTourBuild(){
                 console.log(response);
                 stateCheck.post.id = response.data.post_id;
                 stateCheck.post.permalink = response.data.permalink;
-                document.querySelector('.tour-save-result').insertAdjacentHTML('beforeend', '<p class="save-success-message">Success! Your Tour Build has been submitted! Here\'s your summary below.</p>');
+                if (saveType === 'draft'){
+                    document.querySelector('.tour-save-result').insertAdjacentHTML('beforeend', '<p class="save-warning-message">Success! Your Tour Build has been saved, but not submitted for review! Here\'s your summary below.</p>');
+                }
+                if (saveType === 'submit'){
+                    document.querySelector('.tour-save-result').insertAdjacentHTML('beforeend', '<p class="save-success-message">Success! Your Tour Build has been saved and submitted for review! Here\'s your summary below.</p>');
+                }
                 document.querySelector('.tour-save-result').insertAdjacentHTML('beforeend', `<div><a class="btn btn-primary" href="${stateCheck.post.permalink}">Edit Saved Tour</a><a class="btn btn-primary" href="/tour-builder/">Build A New Tour</a></div>`);
                 document.querySelector('.tour-save-result').insertAdjacentHTML('beforeend', tourSummary);
                 document.querySelector('.loader').remove();
