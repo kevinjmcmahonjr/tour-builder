@@ -103,13 +103,13 @@ function addNewActivity(){
         tourData.itinerary[itineraryKey].activities[activityKey].partOfDay = e.target.value;
     });
 
-    addedActivity.querySelector('input[name="activity-duration"]').addEventListener('change', function(e){
-        tourData.itinerary[itineraryKey].activities[activityKey].duration = e.target.value;
-    });
+    // addedActivity.querySelector('input[name="activity-duration"]').addEventListener('change', function(e){
+    //     tourData.itinerary[itineraryKey].activities[activityKey].duration = e.target.value;
+    // });
 
-    addedActivity.querySelector('input[name="activity-start-time"]').addEventListener('change', function(e){
-        tourData.itinerary[itineraryKey].activities[activityKey].startTime = e.target.value;
-    });
+    // addedActivity.querySelector('input[name="activity-start-time"]').addEventListener('change', function(e){
+    //     tourData.itinerary[itineraryKey].activities[activityKey].startTime = e.target.value;
+    // });
 
     addedActivity.querySelector('input[name="activity-location"]').addEventListener('change', function(e){
         tourData.itinerary[itineraryKey].activities[activityKey].location = e.target.value;
@@ -119,8 +119,12 @@ function addNewActivity(){
         tourData.itinerary[itineraryKey].activities[activityKey].description = e.target.value;
     });
 
-    addedActivity.querySelector('[name="activity-transportation-required"]').addEventListener('change', function(e){
-        tourData.itinerary[itineraryKey].activities[activityKey].transportationRequired = e.target.checked;
+    // addedActivity.querySelector('[name="activity-transportation-required"]').addEventListener('change', function(e){
+    //     tourData.itinerary[itineraryKey].activities[activityKey].transportationRequired = e.target.checked;
+    // });
+
+    addedActivity.querySelector('input[name="tour-activity-transportation-other"]').addEventListener('change', function(e){
+        tourData.itinerary[itineraryKey].activities[activityKey].description = e.target.value;
     });
 
     addedActivity.querySelector('select[name="activity-transportation-type"]').addEventListener('change', function(e){
@@ -220,48 +224,62 @@ function activityTemplate(itineraryDay, activityCount, activityId){
             </select>
         </div>
         <div class="tour-activity-time">
-            <label for="activity-time-${activityId}">Activity Time</label>
+            <label for="activity-time-${activityId}">Activity Time Frame</label>
             <select name="activity-part-of-day" id=activity-time-${activityId}">
                 <option value="" disabled selected>Choose Part of Day</option>
                 <option value="morning">Morning</option>
                 <option value="afternoon">Afternoon</option>
                 <option value="evening">Evening</option>
             </select>
-            <div>
-                <label for="tour-activity-duration-${activityId}">Duration (Hours:Minutes)</label><br>
-                <input type="text" name="activity-duration" id="tour-activity-duration-${activityId}" placeholder="HH:MM" class="cleave-activity-duration-${activityId}">
-            </div>
-            <div>
-            <label for="tour-activity-actual-start-time-${activityId}">Actual Start Time</label>
-                <input type="text" name="activity-start-time" id="tour-activity-actual-start-time-${activityId}" placeholder="HH:MM" class="cleave-activity-start-time-${activityId}">
-            </div>
+            <!--// <div>
+            //     <label for="tour-activity-duration-${activityId}">Duration (Hours:Minutes)</label><br>
+            //     <input type="text" name="activity-duration" id="tour-activity-duration-${activityId}" placeholder="HH:MM" class="cleave-activity-duration-${activityId}">
+            // </div>
+            // <div>
+            // <label for="tour-activity-actual-start-time-${activityId}">Actual Start Time</label>
+            //     <input type="text" name="activity-start-time" id="tour-activity-actual-start-time-${activityId}" placeholder="HH:MM" class="cleave-activity-start-time-${activityId}">
+            // </div> -->
         </div>
         <div class="tour-activity-location">
             <div>
-                <label for="tour-activity-location-${activityId}">Location</label><br>
+                <label for="tour-activity-location-${activityId}">Activity Location</label><br>
                 <input type="text" name="activity-location" id="tour-activity-location-${activityId}" placeholder="City, Country">
             </div>
         </div>
         <div class="tour-activity-description">
             <div>
                 <label for="tour-activity-description-${activityId}">Description</label><br>
-                <input type="text" name="activity-description" id="tour-activity-description-${activityId}" placeholder="Breif activity description">
+                <input type="text" name="activity-description" id="tour-activity-description-${activityId}" placeholder="Brief activity description">
             </div>
         </div>
         <div class="tour-activity-transportation">
-            <div>
+            <!-- <div>
                 <input type="checkbox" name="activity-transportation-required" id="tour-activity-transportation-required-${activityId}">
                 <label for="activity-transportation-required">Transporation Required</label>
-            </div>
+            </div> -->
+            <label for="acitivity-transportation-type-${activityId}">Transportation</label>
             <select name="activity-transportation-type" id="acitivity-transportation-type-${activityId}">
-            <option value="" disabled selected>Choose a transporation</option>
-            <option value="tourCoach">Tour Coach</option>
-            <option value="loaclCoach">Local Coach</option>
-            <option value="other">Other (Add in Notes)</option>
+                <option value="" disabled selected>Choose a transportation</option>
+                <option value="tourCoach">Tour Coach</option>
+                <option value="loaclCoach">Local Coach</option>
+                <option value="notRequired">No Transportation Required</option>
+                <option value="other">Other (Add in Notes)</option>
             </select>
+            <div>
+                <label for="tour-activity-transportation-specify-${activityId}">Specify Transportation</label><br>
+                <input type="text" name="tour-activity-transportation-specification" id="tour-activity-transportation-specify-${activityId}" placeholder="Specify transportation if needed">
+            </div>
+        </div>
+        <div class="tour-activity-optional">
+            <div>
+                <input type="radio" name="activity-included-or-optional-${activityId}" id="acitivity-optional-included-${activityId}" class="tour-activity-radio-button" value="included">
+                <label for="acitivity-optional-included-${activityId}">Included</label>
+                <input type="radio" name="activity-included-or-optional-${activityId}" id="acitivity-optional-optional-${activityId}" class="tour-activity-radio-button" value="optional">
+                <label for="acitivity-optional-optional-${activityId}">Optional</label>
+            </div>
         </div>
     </div>
-    <div class="activity-additional-information">
+    <div class="activity-additional-information" style="display:none;">
         <h4>Additional Activity Information</h4>
         <div class="tour-activity-sight-requirements">
             <div>
@@ -297,14 +315,6 @@ function activityTemplate(itineraryDay, activityCount, activityId){
                 <label for="tour-activity-add-notes-${activityId}">Add Notes</label>
             </div>
             <textarea id="tour-activity-note-${activityId}" name="activity-notes" placeholder="Please add any additional information that isn't already accounted for." rows="4" cols="40"></textarea>
-        </div>
-        <div class="tour-activity-optional">
-            <div>
-                <input type="radio" name="activity-included-or-optional-${activityId}" id="acitivity-optional-included-${activityId}" class="tour-activity-radio-button" value="included">
-                <label for="acitivity-optional-included-${activityId}">Included</label>
-                <input type="radio" name="activity-included-or-optional-${activityId}" id="acitivity-optional-optional-${activityId}" class="tour-activity-radio-button" value="optional">
-                <label for="acitivity-optional-optional-${activityId}">Optional</label>
-            </div>
         </div>
     </div>
 </div>
